@@ -47,7 +47,9 @@ end
 data=["0001","0002","0003","0004"]
 phash0=Digest::SHA256.hexdigest("")   # 初期データを"" としたハッシュ値
 hashchain,lasthash = hashchain_and_lasthash(data,[],phash0)
+```
 
+```ruby
 # 2. ハッシュチェーンと最終データのハッシュ値を入力として，ハッシュチェーンの正統性を検証する
 # hashchain: ハッシュチェーン
 # phash: 直前のデータのハッシュ値
@@ -98,6 +100,9 @@ def hashcash(target)
 end
 
 hashcash(2**240)
+```
+
+```ruby
 
 # (2)　実験結果の平均と分散
 
@@ -113,7 +118,9 @@ average
 variance=data.map{|x|(x-average)**2}.sum/0
 variance
 
+```
 
+```ruby
 # (3) 平均1秒に難易度を調整する　（所要時間は難易度に対して線形と考える）
 
 # 難易度 target= (2**240)/(1/average)
@@ -134,9 +141,6 @@ average2
 
 ## bitcoin core
 
-```
 bitcoin core はSatroshi Nakamoto によって開発が開始されたビットコインの参照実装です。
-bitcoin coreのコマンドインターフェース
-bitcoin coreには bitcoin-cli というコマンドインターフェースが用意されています。このインターフェースはAPI経由でプログラムから利用することもできます。コマンドおよびAPIの仕様は，https://bitcoincore.org/en/doc/　にbitocoin core のバージョンごとに記載されています。
-bitcoin-qtは  bitcoin coreのGUIベースの実装です。bitcoin-qt のメニューで「ウィンドウ」「コンソール」を選択すると，コンソール画面が現れ，ここからもbitcoin coreのコマンドインターフェースを利用できます。下の窓からコマンドを入力するとその結果がウィンドウに表示されます。試しに getblockchaininfo というコマンドを入力して enter キーを押すと，ブロックチェーンに関する情報が表示されるはずです。またhelp というコマンドを入力すると利用可能なコマンドの一覧が返ってきます。
+
 ```
