@@ -1,5 +1,200 @@
 # 4章 ビットコインの仕組み
 
+## ビットコインネットワークへの接続
+
+
+bitcoin core の bitcoin-cli によるビットコインネットワークの確認例
+
+ bitcoin-cli のコマンドを使って現在接続しているビットコインネットワークの情報を確認することができます。
+
+* getblockchaininfo
+
+ブロックチェーン情報の取得
+
+* getnetworkinfo
+
+ノードのネットワークへの接続に関する情報
+
+* getconnectioncount
+
+接続中のノード数
+
+* getpeerinfo
+
+接続中のノードの情報一覧
+
+* getnettotals
+
+ネットワークトラフィック情報
+
+
+```bash
+$ bitcoin-cli getblockchaininfo
+```
+
+signetの場合，次のような情報が返ってきます。
+
+```json
+{
+  "chain": "signet",
+  "blocks": 12454,
+  "headers": 12454,
+  "bestblockhash": "00000081e222edbda201d0c8b4556ebe602f357ff98c9ffaa29700976dc73710",
+  "difficulty": 0.002804606787580661,
+  "mediantime": 1605775600,
+  "verificationprogress": 0.9999520582253688,
+  "initialblockdownload": false,
+  "chainwork": "00000000000000000000000000000000000000000000000000000022b1d0a4ba",
+  "size_on_disk": 5241680,
+  "pruned": false,
+  "softforks": {
+    "bip34": {
+      "type": "buried",
+      "active": true,
+      "height": 1
+    },
+    "bip66": {
+      "type": "buried",
+      "active": true,
+      "height": 1
+    },
+    "bip65": {
+      "type": "buried",
+      "active": true,
+      "height": 1
+    },
+    "csv": {
+      "type": "buried",
+      "active": true,
+      "height": 1
+    },
+    "segwit": {
+      "type": "buried",
+      "active": true,
+      "height": 1
+    },
+    "taproot": {
+      "type": "bip9",
+      "bip9": {
+        "status": "active",
+        "start_time": -1,
+        "timeout": 9223372036854775807,
+        "since": 0
+      },
+      "height": 0,
+      "active": true
+    }
+  },
+  "warnings": "This is a pre-release test build - use at your own risk - do not use for mining or merchant applications"
+```
+
+## ワレット
+
+bitcoin core の bitcoin-cli によるワレットの操作の例
+ bitcoin-cli によるコマンドでbitcoin core のワレットを利用することができます。
+bitcoin core のワレットを使用するためには最初にワレットを作成する必要があります。
+
+```
+createwallet <ワレット名> 
+```
+
+### ワレットの作成
+
+```bash
+$ bitcoin-cli createwallet alice 
+{
+  "name": "alice",
+  "warning": ""
+}
+```
+
+テスト用のビットコインを入手するためには，自分のビットコインアドレスを生成する必要があります。このときに自分の秘密鍵と公開鍵も生成されています。
+getnewaddress
+
+### 新規に自分のビットコインアドレスを生成する。
+
+（ワレットの指定が必要）
+
+```bash
+$ bitcoin-cli  -rpcwallet=alice getnewaddress      
+tb1q8h0qf2v6vjjs5ps679tvjlcmlcgm6d0ws5pjnj
+```
+
+自分の公開鍵を見てみましょう。次のコマンドで表示される情報の中の "pubkey":  の部分が公開鍵です。
+getaddressinfo <ビットコインアドレス>
+アドレスに関連する情報（ワレットの指定が必要）
+
+```bash
+$ bitcoin-cli -rpcwallet=alice getaddressinfo tb1q8h0qf2v6vjjs5ps679tvjlcmlcgm6d0ws5pjnj
+{
+  "address": "tb1q8h0qf2v6vjjs5ps679tvjlcmlcgm6d0ws5pjnj",
+...
+  "pubkey": "0366f277f2cf7d036bfee4a8b5ff9316125d0c6de284ab0913c5a0c1abd35a20d4",
+...
+  ]
+}
+```
+
+秘密鍵を見るには次のようにします。
+dumpprivkey <ビットコインアドレス>	
+ビットコインアドレスに対応する秘密鍵の出力
+
+```bash
+$ bitcoin-cli -rpcwallet=alice dumpprivkey tb1q8h0qf2v6vjjs5ps679tvjlcmlcgm6d0ws5pjnj
+cW27thy8ZyWeWAZAx82Zyz1mBbA6L6AifwKhzsPJypWKoadAmzDs
+```
+
+
+### テスト用ビットコインの入手
+
+signet のfaucet サイトで要求すると，無償でテスト用ビットコインを入手することができます。入手方法は，webページのフィールドに自分のワレットで生成した自分のビットコインアドレスを入れて request ボタンをクリックするだけです。
+https://signet.bc-2.jp/
+
+### 自分のワレットの残高の確認
+
+10分以上経過後に自分のワレットの残高を以下のようにして確認すると 10.0 BTC あるはずです。
+
+* getbalance
+
+ワレットにある所持金の合計金額		
+
+```bash
+$ bitcoin-cli  -rpcwallet=alice getbalance      
+10.00000000
+```
+
+### ビットコインアドレスを宛先にした送金
+
+ためしにfaucetから得たコインを自分から自分宛に送金してみましょう。
+
+
+* sendtoaddress <ビットコインアドレス> <金額>
+ 
+ビットコインアドレス宛の送金
+
+```bash
+$ bitcoin-cli -rpcwallet=alice tb1qrh67zywp2fdhlwy5cus7h0xg3pfsm8cc0cqzej 2.1
+
+fb0bcb881b7a60dfe5743a23bc7acc64b7286287978fc008fc2bdbe0cdef78c3
+```
+
+このコマンドの実行結果で返ってきた値は@トランザクションID@と呼ばれるトランザクションの識別子です。今後は txid と略記します。
+10分以上経過後に自分のワレットの残高を確認してみてください。自分から自分に送金したので，残高は増減していないはずなのに少し減っていると思います。これは送金金額から手数料 (fee) が引かれたからです。
+
+### トランザクションの一覧の表示
+
+自分が行ったトランザクションの一覧を見ることで自分が行った入出金の履歴を確認することができます。また送金に使用した手数料(fee) の金額を確認することもできます。また未使用のトランザクションの一覧を見ることもできます。
+
+* listtransactions
+ 
+自分が送受信したトランザクションの一覧
+
+* listunspent
+
+未使用のトランザクションの一覧
+
+
+
 ## トランザクション
 
 トランザクションのライフサイクル
