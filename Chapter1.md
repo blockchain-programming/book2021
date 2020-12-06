@@ -143,8 +143,6 @@ average2
 ## 課題
 
 
-
-
 ## bitcoin core
 
 bitcoin core はSatroshi Nakamoto によって開発が開始されたビットコインの参照実装です。
