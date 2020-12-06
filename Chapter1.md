@@ -17,9 +17,9 @@ Digest::SHA256.hexdigest "12346"
 
 ## 演習課題
 
-* データの配列 ["0001","0002","0003","0004"] を入力，IV="" として，SHA256によるハッシュチェーンと最終データのハッシュ値を出力するプログラムを作成してください。
+* データの配列 ["0001","0002","0003","0004"] を入力，IV="0000" として，SHA256によるハッシュチェーンと最終データのハッシュ値を出力するプログラムを作成してください。
 
-* ハッシュチェーンと最終データのハッシュ値を入力とし，IV="" として，ハッシュチェーンの正統性を検証するプログラムを作成してください。
+* ハッシュチェーンと最終データのハッシュ値を入力とし，IV="0000" として，ハッシュチェーンの正統性を検証するプログラムを作成してください。
 
 
 
@@ -29,6 +29,15 @@ Digest::SHA256.hexdigest "12346"
 # 1. ハッシュチェーンと最終データのハッシュ値を出力するプログラム
 
 require 'digest/sha2'
+
+# 手動で実験
+#  データとハッシュ値のデリミタを":" とします
+
+IV="0000"
+d1="0001"+":"+Digest::SHA256.hexdigest(IV)
+d2="0002"+":"+igest::SHA256.hexdigest(d1)
+d3="0003"+":"+igest::SHA256.hexdigest(d2)
+d4="0004"+":"+igest::SHA256.hexdigest(d3)
 
 # data: データの配列，
 # chain: ハッシュチェーン, 
@@ -45,7 +54,7 @@ def hashchain_and_lasthash(data,hashchain,phash)
 end
 
 data=["0001","0002","0003","0004"]
-phash0=Digest::SHA256.hexdigest("")   # 初期データを"" としたハッシュ値
+phash0=Digest::SHA256.hexdigest("0000")   # 初期データを"0000" としたハッシュ値
 hashchain,lasthash = hashchain_and_lasthash(data,[],phash0)
 ```
 
@@ -67,7 +76,7 @@ def verifyhashchain(hashchain,phash,lasthash)
   end
 end
 
-phash0=Digest::SHA256.hexdigest("")  # 初期データを"" としたハッシュ値
+phash0=Digest::SHA256.hexdigest("0000")  # 初期データを"0000" としたハッシュ値
 verifyhashchain(hashchain,phash0,lasthash)
 
 ```
@@ -133,10 +142,7 @@ average2
 
 ## 課題
 
-* Satoshi Nakamoto論文を最後まで精読してください。
-* bitcoin core をインストールしてください。
 
-ただし接続するネットワークは本物の仮想通貨を扱うmainnet ではなく，実験や開発のためのネットワークである　signet　にしてください。
 
 
 ## bitcoin core
