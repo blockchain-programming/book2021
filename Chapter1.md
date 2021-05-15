@@ -35,9 +35,9 @@ require 'digest/sha2'
 
 IV="0000"
 d1="0001"+":"+Digest::SHA256.hexdigest(IV)
-d2="0002"+":"+igest::SHA256.hexdigest(d1)
-d3="0003"+":"+igest::SHA256.hexdigest(d2)
-d4="0004"+":"+igest::SHA256.hexdigest(d3)
+d2="0002"+":"+Digest::SHA256.hexdigest(d1)
+d3="0003"+":"+Digest::SHA256.hexdigest(d2)
+d4="0004"+":"+Digest::SHA256.hexdigest(d3)
 
 # data: データの配列，
 # chain: ハッシュチェーン, 
