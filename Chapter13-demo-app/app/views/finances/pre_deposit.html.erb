@@ -1,0 +1,12 @@
+<%= form_tag("/finances/deposit") do %>
+  <div class="form-group">
+    <label for="deposit">入金額</label>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text">￥</span>
+      </div>
+      <input type="number" name="deposit" id="deposit" class="form-control" style="max-width: 16rem;" aria-label="deposit amount (JPY)" value="<%= @deposit %>">
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary" value="deposit">入金</button>
+<% end %>

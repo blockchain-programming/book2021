@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ex</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+
+<body style="height: 100%">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <%= link_to "Exchange Demo", index_path, class: 'navbar-brand' %>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <% if session[:user_id] %>
+        <div class="navbar-nav my-1">
+          <%= link_to "ホーム", home_path, class: 'nav-item, nav-link' %>
+          <%= link_to "ウォレット一覧", wallets_show_path, class: 'nav-item nav-link' %>
+          <%= link_to "口座照会", finances_show_path, class: 'nav-item nav-link' %>
+          <%= link_to "入金", finances_deposit_path, class: 'nav-item nav-link' %>
+          <%= link_to "ビットコイン購入", exchanges_jpy_path, class: 'nav-item nav-link' %>
+          <%= link_to "ビットコイン売却", exchanges_btc_path, class: 'nav-item nav-link' %>
+
+        </div>
+        <div class="ml-auto mr-0">
+          <%= link_to "Log out", logout_path, class: 'btn btn-outline-danger btn-block', method: :delete %>
+        </div>
+      <% else %>
+        <div class="ml-auto mr-1 my-1">
+          <%= link_to "Sign up", signup_path, class: 'btn btn-outline-success btn-block' %>
+        </div>
+        <div class="mr-1 my-1">
+          <%= link_to "Log in", login_path, class: 'btn btn-primary btn-block' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</nav>
+
+<% require 'active_support/core_ext/numeric/conversions' %>
+<% if session[:user_id] %>
+  <div class="container mt-2 mb-4 py-2 bg-light">
+    <span class="mr-2">user id: <%= current_user.id %></span>
+
+    <span class="mr-2">
+      <% if current_finance != nil %>
+        残高 <%= current_finance.fiat_jpy.to_s(:delimited) %>JPY
+      <% else %>
+        <%= link_to '口座未登録', finances_new_path %>
+      <% end %>
+    </span>
+
+    <span>
+      <% if current_wallet != nil %>
+        <%= get_balance(current_wallet).to_s(:delimited) %>BTC
+      <% else %>
+        <%= link_to 'ウォレット未作成', wallets_new_path %>
+      <% end %>
+    </span>
+  </div>
+<% end %>
+
+<div class="container mt-2">
+
+  <% flash.each do |message_type, message| %>
+    <div class="alert alert-<%= message_type %>"><%= message %></div>
+  <% end %>
+
+  <%= yield %>
+</div>
+
+<footer <%= request.env['PATH_INFO'].include?('blockchain') ? '' : 'id=footer' %> class="bg-light py-4 mt-4">
+  <div class="container d-flex justify-content-between">
+    <p><%= link_to 'Blockchain admin', blockchain_home_path, class: 'text-secondary' %></p>
+    <p>&copy; Exchange Demo</p>
+  </div>
+</footer>
+
+</body>
+</html>

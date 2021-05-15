@@ -1,0 +1,16 @@
+<% if @wallet %>
+  <% @wallet.keys.each do |key| %>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Wallet</h5>
+        <p class="card-text">wallet ID: <%= @wallet.id %></p>
+        <p class="card-text">key ID: <%= key.id %></p>
+        <p class="card-text">receive address: <%= key.address %></p>
+        <p class="card-text">pubkey: <%= key.public_key %></p>
+      </div>
+    </div>
+  <% end %>
+<% else %>
+  <p>No wallet</p>
+  <p><%= link_to "ウォレットを作成する", wallets_new_path %></p>
+<% end %>

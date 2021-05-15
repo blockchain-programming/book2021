@@ -1,0 +1,10 @@
+<%= form_for @wallet, url: wallets_new_path do |wallet| %>
+  <div>
+    <%= wallet.label :name %>
+    <%= wallet.text_field :name %>
+  </div>
+
+  <div class="actions">
+    <%= wallet.submit "create" %>
+  </div>
+<% end %>

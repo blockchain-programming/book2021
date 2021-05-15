@@ -1,0 +1,22 @@
+<h2>Blockchain admin</h2>
+
+<div>
+  <h3>Blockchain info</h3>
+  <p><%= @blockchain_info %></p>
+
+  <h3>Exchange volume</h3>
+  <p><%= @balance %>BTC</p>
+
+  <h3>UTXOs of current address</h3>
+  <% @current_user_utxos.each do |utxo| %>
+    <p><%= utxo %></p>
+  <% end %>
+
+  <h3>UTXOs of exchange address</h3>
+  <% @exchange_utxos.each do |utxo| %>
+    <p><%= utxo %></p>
+  <% end %>
+</div>
+
+<%= link_to 'generate', blockchain_generate_path, class: 'btn btn-primary' %>
+<%= link_to 'mining', blockchain_mining_path, class: 'btn btn-primary' %>

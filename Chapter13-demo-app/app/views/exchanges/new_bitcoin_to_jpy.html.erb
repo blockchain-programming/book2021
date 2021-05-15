@@ -1,0 +1,14 @@
+<% require 'active_support/core_ext/string/conversions' %>
+<p>1BTC = <%= @jpy_btc_rate.to_s(:delimited) %>JPY</p>
+<%= form_for @exchange, url: exchanges_btc_path do |ex| %>
+  <div class="form-group">
+    <%= ex.label 'ビットコイン売却量', for: 'bitcoin_amount' %>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Ƀ</span>
+      </div>
+      <%= ex.number_field :bitcoin_trading_volume, step: :any, id: 'bitcoin_amount', class: "form-control", style: "max-width: 16rem;" %>
+    </div>
+  </div>
+  <%= ex.submit '売却', class: "btn btn-primary" %>
+<% end %>

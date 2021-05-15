@@ -1,0 +1,27 @@
+<h2 class="mb-3">入金用口座</h2>
+<% require 'active_support/core_ext/numeric/conversions' %>
+<% if @finance == nil %>
+  <p>口座がありません。</p>
+  <p><% link_to "口座登録", finances_new_path %></p>
+<% else %>
+  <table class="table">
+    <tbody>
+    <tr>
+      <th scope="row">店番号</th>
+      <td><%= @finance.branch_number %></td>
+    </tr>
+    <tr>
+      <th scope="row">口座番号</th>
+      <td><%= @finance.account_number %></td>
+    </tr>
+    <tr>
+      <th scope="row">名義</th>
+      <td><%= @finance.name %></td>
+    </tr>
+    <tr>
+      <th scope="row">入金残高</th>
+      <td><%= @finance.fiat_jpy.to_s(:delimited) %>円</td>
+    </tr>
+    </tbody>
+  </table>
+<% end %>

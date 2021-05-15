@@ -1,0 +1,16 @@
+<%= form_for @finance, url: finances_new_path do |f| %>
+  <div>
+    <%= f.label "口座番号" %>
+    <%= f.number_field :branch_number  %>
+    <%= f.number_field :account_number  %>
+  </div>
+
+  <div>
+    <%= f.label "名義" %>
+    <%= f.text_field :name  %>
+  </div>
+
+  <div>
+    <%= f.submit "create" %>
+  </div>
+<% end %>
