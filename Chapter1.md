@@ -50,50 +50,64 @@ require 'digest/sha2'
 #  データとハッシュ値のデリミタを":" とします
 
 IV="0000"
-d1="0001"+":"+Digest::SHA256.hexdigest(IV)
-d2="0002"+":"+Digest::SHA256.hexdigest(d1)
-d3="0003"+":"+Digest::SHA256.hexdigest(d2)
-d4="0004"+":"+Digest::SHA256.hexdigest(d3)
+data1="0001"+":"+Digest::SHA256.hexdigest(IV)
+data2="0002"+":"+Digest::SHA256.hexdigest(data1)
+data3="0003"+":"+Digest::SHA256.hexdigest(data2)
+data4="0004"+":"+Digest::SHA256.hexdigest(data3)
 
-# data: データの配列，
-# chain: ハッシュチェーン, 
-# phash: 直前データのハッシュ値
+# data_list: データの配列，
+# hashchain: ハッシュチェーン, 
+# prev_hash: 直前データのハッシュ値
 
-def hashchain_and_lasthash(data,hashchain,phash)
-  if data==[] then [hashchain,phash]
+def hashchain_and_lasthash(data_list,hashchain,prev_hash)
+  if data_list==[] then [hashchain,prev_hash]
   else
-    d=data.shift+':'+phash
+    d=data_list.shift+':'+prev_hash
     hashchain<<d
     hash=Digest::SHA256.hexdigest(d)
-    hashchain_and_lasthash(data,hashchain,hash)
+    hashchain_and_lasthash(data_list,hashchain,hash)
   end
 end
 
-data=["0001","0002","0003","0004"]
-phash0=Digest::SHA256.hexdigest("0000")   # 初期データを"0000" としたハッシュ値
-hashchain,lasthash = hashchain_and_lasthash(data,[],phash0)
+data_list=["0001","0002","0003","0004"]
+prev_hash0=Digest::SHA256.hexdigest("0000")   # 初期データを"0000" としたハッシュ値
+hashchain, lasthash = hashchain_and_lasthash(data_list,[],prev_hash0)
+
+# 確認
+hashchain
+=> 
+["0001:9af15b336e6a9619928537df30b2e6a2376569fcf9d7e773eccede65606529a0",
+ "0002:ea33cc2bf83ebba45c4870bb43b2c3fab4f00c2705313d80e80a61f12f32da5d",
+ "0003:940e4ad5051baa5d19dc5e4c9750db738ef1af5ae3a733a9ff7e0d37d06751e8",
+ "0004:639923390dbc370e858731b0e11ba3c6dc12fd52eefe6a0217a250c0c3e7219c"]
+ 
+lasthash
+=> "9af15b336e6a9619928537df30b2e6a2376569fcf9d7e773eccede65606529a0"
 ```
 
 ```ruby
 # 2. ハッシュチェーンと最終データのハッシュ値を入力として，ハッシュチェーンの正統性を検証する
 # hashchain: ハッシュチェーン
-# phash: 直前のデータのハッシュ値
+# prev_hash: 直前のデータのハッシュ値
 # lasthash: 最終ハッシュ値
 
-def verifyhashchain(hashchain,phash,lasthash)
-  if hashchain==[] then phash==lasthash
+def verifyhashchain(hashchain,prev_hash,lasthash)
+  if hashchain==[] then prev_hash==lasthash
   else
     d=hashchain.shift
     chash=d.split(':')[1]
     hash=Digest::SHA256.hexdigest(d)
-    if phash==chash then verifyhashchain(hashchain,hash,lasthash)
+    if prev_hash==chash then verifyhashchain(hashchain,hash,lasthash)
     else false
     end
   end
 end
 
-phash0=Digest::SHA256.hexdigest("0000")  # 初期データを"0000" としたハッシュ値
-verifyhashchain(hashchain,phash0,lasthash)
+prev_hash0=Digest::SHA256.hexdigest("0000")  # 初期データを"0000" としたハッシュ値
+
+# 検証
+verifyhashchain(hashchain,prev_hash0,lasthash)
+=> true
 
 ```
 
@@ -101,18 +115,16 @@ verifyhashchain(hashchain,phash0,lasthash)
 
 * 実際に SHA256 によるHashCash法を実装してください。
 
-難易度を 2240として，難易度未満のハッシュ値を得るための入力値とそのハッシュ値を求める実験を行ってください。
-実験を100回繰り返して，ハッシュ値が得られるまでの平均時間と分散を求めてください
-平均1秒でターゲット未満のハッシュ値が得られる難易度をできるだけ正確に求めてください。
-
-
+	* 難易度を 2^240として，難易度未満のハッシュ値を得るための入力値とそのハッシュ値を求め。
+	* 実験を100回繰り返して，ハッシュ値が得られるまでの平均時間と分散を求めてください
+	* 平均1秒でターゲット未満のハッシュ値が得られる難易度をできるだけ正確に求めてください。
 
 ## 回答例
 
+(1)hashcash法の実装
+
 ```ruby
 require 'openssl'
-
-# (1)hashcash法の実装
 
 def hashcash(target)
   hash=0
@@ -124,43 +136,46 @@ def hashcash(target)
   return [pow,hash]
 end
 
-hashcash(2**240)
+# 確認
+hashcash(2**235)
 ```
 
+(2)　実験結果の平均と分散
+
 ```ruby
-
-# (2)　実験結果の平均と分散
-
 def hashcashTime(target)
   t0=Time.now
   hashcash(target)
   return Time.now-t0
 end
 
-data=(1..100).map{|x|hashcashTime(2**240)}
-average=data.sum/100
+# 実験
+hashcashTime(2**240)
+hashcashTime(2**239)
+hashcashTime(2**238)
+hashcashTime(2**237)
+hashcashTime(2**236)
+hashcashTime(2**235)
+
+# 100回実験する
+N=100
+TARGET=2**240
+data=(1..N).map{|x|hashcashTime(TARGET)}
+# 平均時間
+average=data.sum/N
 average
-variance=data.map{|x|(x-average)**2}.sum/0
+# 分散
+variance=data.map{|x|(x-average)**2}.sum/N
 variance
 
 ```
 
+(3) 平均1秒に難易度を調整する　（所要時間は難易度に対して線形と考える）
+
 ```ruby
-# (3) 平均1秒に難易度を調整する　（所要時間は難易度に対して線形と考える）
-
-# 難易度 target= (2**240)/(1/average)
-
-data2=(1..50).map{|x|hashcashTime(((2**240)/(1/average)).to_i)}
-average2=data2.sum/50.0
+# 難易度 
+target= TARGET/(1/average)
+data2=(1..N).map{|x|hashcashTime((TARGET/(1/average)).to_i)}
+average2=data2.sum/N
 average2
-```
-
-
-## 課題
-
-
-## bitcoin core
-
-bitcoin core はSatroshi Nakamoto によって開発が開始されたビットコインの参照実装です。
-
 ```
