@@ -21,6 +21,7 @@
 * 暗号学的ハッシュ関数 SHA256 のライブラリを利用して，データ"12345" と"12346" のハッシュ値を求めるプログラムを作成してください。
 
 ## 回答例
+以降Ruby言語の例
 
 ```ruby
 # SHA256による暗号学的ハッシュ関数の実行
@@ -33,80 +34,101 @@ Digest::SHA256.hexdigest "12346"
 
 ## 演習課題
 
-* データの配列 ["0001","0002","0003","0004"] を入力，IV="0000" として，SHA256によるハッシュチェーンと最終データのハッシュ値を出力するプログラムを作成してください。
+1. データの配列 ["0001","0002","0003","0004"] を入力，IV="0000" として，SHA256によるハッシュチェーンと最終データのハッシュ値を出力するプログラムを作成してください。
 
-* ハッシュチェーンと最終データのハッシュ値を入力とし，IV="0000" として，ハッシュチェーンの正統性を検証するプログラムを作成してください。
-
-
+2. ハッシュチェーンと最終データのハッシュ値を入力とし，IV="0000" として，ハッシュチェーンの正統性を検証するプログラムを作成してください。
 
 ## 回答例
 
-```ruby
-# 1. ハッシュチェーンと最終データのハッシュ値を出力するプログラム
+### 1.ハッシュチェーンの作成と最終ハッシュ値
 
+(1) まず手動でハッシュチェーンを作成してみます。
+
+```ruby
 require 'digest/sha2'
 
-# 手動で実験
-#  データとハッシュ値のデリミタを":" とします
-
-IV="0000"
-data1="0001"+":"+Digest::SHA256.hexdigest(IV)
-data2="0002"+":"+Digest::SHA256.hexdigest(data1)
-data3="0003"+":"+Digest::SHA256.hexdigest(data2)
-data4="0004"+":"+Digest::SHA256.hexdigest(data3)
-
-# data_list: データの配列，
-# hashchain: ハッシュチェーン, 
-# prev_hash: 直前データのハッシュ値
-
-def hashchain_and_lasthash(data_list,hashchain,prev_hash)
-  if data_list==[] then [hashchain,prev_hash]
-  else
-    d=data_list.shift+':'+prev_hash
-    hashchain<<d
-    hash=Digest::SHA256.hexdigest(d)
-    hashchain_and_lasthash(data_list,hashchain,hash)
-  end
-end
-
-data_list=["0001","0002","0003","0004"]
-prev_hash0=Digest::SHA256.hexdigest("0000")   # 初期データを"0000" としたハッシュ値
-hashchain, lasthash = hashchain_and_lasthash(data_list,[],prev_hash0)
-
-# 確認
+# データの配列 ["0001","0002","0003","0004"] がデータ
+# IV="0000" 
+# データとハッシュ値のデリミタを":" とします
+# ハッシュチェーン
+IV="0000"	
+block1="0001"+":"+IV
+block2="0002"+":"+Digest::SHA256.hexdigest(block1)
+block3="0003"+":"+Digest::SHA256.hexdigest(block2)
+block4="0004"+":"+Digest::SHA256.hexdigest(block3)
+hashchain=[block1, block2, block3, block4]
+lasthash=Digest::SHA256.hexdigest(block4)
+# ハッシュチェーン
 hashchain
 => 
-["0001:9af15b336e6a9619928537df30b2e6a2376569fcf9d7e773eccede65606529a0",
- "0002:ea33cc2bf83ebba45c4870bb43b2c3fab4f00c2705313d80e80a61f12f32da5d",
- "0003:940e4ad5051baa5d19dc5e4c9750db738ef1af5ae3a733a9ff7e0d37d06751e8",
- "0004:639923390dbc370e858731b0e11ba3c6dc12fd52eefe6a0217a250c0c3e7219c"]
+["0001:0000",
+ "0002:5114fae697241bc0cf0d914d637ee368919ef2d4bc49302289141c71a00ec6b2",
+ "0003:b1d7dfe29aeaaba6fadaceffce8d6709e4c5cdfa80ce7673b62d4dcc66fcea2e",
+ "0004:43371bcb864782ec393fa830eae758ad1e2b172989e8763074fa7a576a8cfe55"]
  
+# 最終ハッシュ値
 lasthash
+=> "9455075057982b2d43c6fcaa9e5e75058efd43a21107f67526515face5c48365"
+```
+
+(2) プログラムとして実装
+
+```ruby
+# data_list: データの配列
+IV="0000"	
+data_list=["0001","0002","0003","0004"]
+
+# prev_hash: 直前ブロックのハッシュ値
+
+# ハッシュチェーンの生成
+def hashchain(data_list,prev_hash)
+	data_list.map{|data|
+		block=data+':'+prev_hash
+		prev_hash=Digest::SHA256.hexdigest(block)
+		block
+	}
+end
+
+# 実行
+blockchain=hashchain(data_list,IV)
+=> 
+["0001:0000",
+ "0002:5114fae697241bc0cf0d914d637ee368919ef2d4bc49302289141c71a00ec6b2",
+ "0003:b1d7dfe29aeaaba6fadaceffce8d6709e4c5cdfa80ce7673b62d4dcc66fcea2e",
+ "0004:43371bcb864782ec393fa830eae758ad1e2b172989e8763074fa7a576a8cfe55"]
+ 
+ # 最終ハッシュ値
+lasthash=Digest::SHA256.hexdigest(blockchain[-1])
 => "9af15b336e6a9619928537df30b2e6a2376569fcf9d7e773eccede65606529a0"
 ```
 
+### 2. ハッシュチェーンの検証
+
+ハッシュチェーンのブロックのハッシュ値を，ハッシュチェーンの正統性を検証する
+
+
+* すべてのブロックで，ブロック中に埋め込まれている「直前のブロックのハッシュ値」が実際に直前のブロックのハッシュ値に一致する
+* 最後のブロックのハッシュ値が最終ハッシュ値に一致する
+ 
 ```ruby
-# 2. ハッシュチェーンと最終データのハッシュ値を入力として，ハッシュチェーンの正統性を検証する
-# hashchain: ハッシュチェーン
-# prev_hash: 直前のデータのハッシュ値
+# blockchain: ハッシュチェーン
+# prev_hash: 直前のブロックのハッシュ値
 # lasthash: 最終ハッシュ値
 
 def verifyhashchain(hashchain,prev_hash,lasthash)
-  if hashchain==[] then prev_hash==lasthash
-  else
-    d=hashchain.shift
-    chash=d.split(':')[1]
-    hash=Digest::SHA256.hexdigest(d)
-    if prev_hash==chash then verifyhashchain(hashchain,hash,lasthash)
-    else false
-    end
-  end
+	hashchain.map{|block|
+		hash=block.split(':')[1]
+		if hash==prev_hash then
+			prev_hash=Digest::SHA256.hexdigest(block)
+			true
+		else
+			false
+		end
+	}.all? and (prev_hash==lasthash)
 end
 
-prev_hash0=Digest::SHA256.hexdigest("0000")  # 初期データを"0000" としたハッシュ値
-
-# 検証
-verifyhashchain(hashchain,prev_hash0,lasthash)
+# ハッシュチェーンの検証
+verifyhashchain(blockchain,IV,lasthash)
 => true
 
 ```
@@ -115,7 +137,7 @@ verifyhashchain(hashchain,prev_hash0,lasthash)
 
 * 実際に SHA256 によるHashCash法を実装してください。
 
-	* 難易度を 2^240として，難易度未満のハッシュ値を得るための入力値とそのハッシュ値を求め。
+	* 難易度を<img src="https://latex.codecogs.com/gif.latex?2^{240}" />として，難易度未満のハッシュ値を得るための入力値とそのハッシュ値を求める。
 	* 実験を100回繰り返して，ハッシュ値が得られるまでの平均時間と分散を求めてください
 	* 平均1秒でターゲット未満のハッシュ値が得られる難易度をできるだけ正確に求めてください。
 
@@ -124,32 +146,39 @@ verifyhashchain(hashchain,prev_hash0,lasthash)
 (1)hashcash法の実装
 
 ```ruby
-require 'openssl'
+require 'digest/sha2'
+
+# 難易度ターゲットを設定し，ランダムに選んだプルーフオブワークの原像とそのハッシュ値を求める
 
 def hashcash(target)
   hash=0
   pow=""
+  size=2**256
   begin
-      pow=rand(target).to_s
-      hash=OpenSSL::Digest.hexdigest('sha256',pow).to_i(16)
+      pow=rand(size).to_s
+      hash=Digest::SHA256.hexdigest(pow).to_i(16)
   end until hash<target
   return [pow,hash]
 end
 
-# 確認
+# 難易度を2**235として確認
 hashcash(2**235)
 ```
 
 (2)　実験結果の平均と分散
 
 ```ruby
+
+# 実行時間の測定
+
 def hashcashTime(target)
   t0=Time.now
   hashcash(target)
   return Time.now-t0
 end
 
-# 実験
+# 難易度を変えて実験する
+
 hashcashTime(2**240)
 hashcashTime(2**239)
 hashcashTime(2**238)
