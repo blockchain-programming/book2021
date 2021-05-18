@@ -156,16 +156,6 @@ end
 # 難易度を2**240として確認
 hashcash(2**240)
 
-
-# 難易度を変えて実験する
-
-hashcashTime(2**240)
-hashcashTime(2**239)
-hashcashTime(2**238)
-hashcashTime(2**237)
-hashcashTime(2**236)
-hashcashTime(2**235)
-
 ```
 
 (2)　実験結果の平均と分散
@@ -179,6 +169,15 @@ def hashcashTime(target)
   hashcash(target)
   return Time.now-t0
 end
+
+# 難易度を変えて実験する
+
+hashcashTime(2**240)
+hashcashTime(2**239)
+hashcashTime(2**238)
+hashcashTime(2**237)
+hashcashTime(2**236)
+hashcashTime(2**235)
 
 # 100回実験する
 N=100
