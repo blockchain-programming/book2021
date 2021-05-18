@@ -44,7 +44,7 @@ require 'digest/sha2'
 # IV="0000" 
 # データとハッシュ値のデリミタを":" とします
 # ハッシュチェーン
-IV="0000"	
+IV="0000"    
 block1="0001"+":"+IV
 block2="0002"+":"+Digest::SHA256.hexdigest(block1)
 block3="0003"+":"+Digest::SHA256.hexdigest(block2)
@@ -68,18 +68,18 @@ lasthash
 
 ```ruby
 # data_list: データの配列
-IV="0000"	
+IV="0000"    
 data_list=["0001","0002","0003","0004"]
 
 # prev_hash: 直前ブロックのハッシュ値
 
 # ハッシュチェーンの生成
 def hashchain(data_list,prev_hash)
-	data_list.map{|data|
-		block=data+':'+prev_hash
-		prev_hash=Digest::SHA256.hexdigest(block)
-		block
-	}
+  data_list.map{|data|
+    block=data+':'+prev_hash
+    prev_hash=Digest::SHA256.hexdigest(block)
+    block
+  }
 end
 
 # 実行
@@ -110,15 +110,15 @@ lasthash=Digest::SHA256.hexdigest(blockchain[-1])
 # lasthash: 最終ハッシュ値
 
 def verifyhashchain(hashchain,prev_hash,lasthash)
-	hashchain.map{|block|
-		hash=block.split(':')[1]
-		if hash==prev_hash then
-			prev_hash=Digest::SHA256.hexdigest(block)
-			true
-		else
-			false
-		end
-	}.all? and (prev_hash==lasthash)
+  hashchain.map{|block|
+    hash=block.split(':')[1]
+    if hash==prev_hash then
+       prev_hash=Digest::SHA256.hexdigest(block)
+       true
+    else
+       false
+    end
+  }.all? and (prev_hash==lasthash)
 end
 
 # ハッシュチェーンの検証
@@ -147,8 +147,8 @@ def hashcash(target)
   pow=""
   size=2**256
   begin
-      pow=rand(size).to_s
-      hash=Digest::SHA256.hexdigest(pow).to_i(16)
+    pow=rand(size).to_s
+    hash=Digest::SHA256.hexdigest(pow).to_i(16)
   end until hash<target
   return [pow,hash]
 end
