@@ -192,12 +192,11 @@ variance
 
 ```
 
-(3) 平均1秒に難易度を調整する　（所要時間は難易度に対して線形と考える）
+(3) マイニング時間が平均1秒になるように難易度を調整する　（所要時間は難易度に対して線形と考える）
 
 ```ruby
 # 難易度 
-target= TARGET/(1/average)
-data2=(1..N).map{|x|hashcashTime((TARGET/(1/average)).to_i)}
+target= TARGET*average
+data2=(1..N).map{|x|hashcashTime(target)}
 average2=data2.sum/N
-average2
 ```
