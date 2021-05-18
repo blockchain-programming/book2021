@@ -10,6 +10,9 @@
 ## 課題
 
 * サトシ・ナカモト論文を最後まで精読してください。
+
+[https://bitcoin.org/bitcoin.pdf](https://bitcoin.org/bitcoin.pdf)
+
 * Bitcoin Core をインストールしてください。
 
 ただし接続するネットワークは本物の仮想通貨を扱う mainnet ではなく，実験や開発のため のネットワークである signet にしてください。
