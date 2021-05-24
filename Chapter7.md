@@ -69,3 +69,34 @@ TCP接続ができたら、ハンドシェイクを行ってみましょう。
 
 ## ３．イーサリアムのノードIDと同じように512 bitの公開鍵を5つ生成し，そのうち1つを選択し他の公開鍵を，選択した公開鍵と距離の近い順に，つまりノード間の距離が近い順にソートしてみましょう。
 
+公開鍵の計算の`ecdsa` gemを使用すると、以下のように計算が可能です（下記ではハッシュ関数はKeccak-256ではなく一般的なSHA-256を使用しています）。
+
+```ruby
+require 'ecdsa'
+require 'securerandom'
+require 'digest'
+
+group = ECDSA::Group::Secp256k1
+
+# 5つの公開鍵を作成
+public_keys = 5.times.map do
+  private_key = 1 + SecureRandom.random_number(group.order - 1)
+  public_key = group.generator.multiply_by_scalar(private_key)
+  # ecdsa gemでは公開鍵の先頭1バイトにy座標の情報が付与されているためそれを除去
+  ECDSA::Format::PointOctetString.encode(public_key)[1..-1]
+end
+
+# 1つ公開鍵を選択
+selected = Digest::SHA256.hexdigest(public_keys.pop).to_i(16)
+
+# selectedと距離の近い順にソート
+sorted = public_keys.sort do |a, b|
+  a_h = Digest::SHA256.hexdigest(a).to_i(16)
+  b_h = Digest::SHA256.hexdigest(b).to_i(16)
+  distance_a = a_h ^ selected
+  distance_b = b_h ^ selected
+  distance_a <=> distance_b
+end
+
+puts sorted.map {|x|x.unpack1('H*')}
+```
