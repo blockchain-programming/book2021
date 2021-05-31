@@ -1,38 +1,11 @@
 # 3章 演習
 
 ## 演習課題
-
-* ρ法を用いて暗号学的ハッシュ関数の衝突ペアを求めてください。ただし，利用する暗号学的ハッシュ関数は SHA-256の先頭２バイトを取る関数とします。
+1. 不特定のメンバーによる賭け事をスマートコントラクトで実現するとき，そのオラクル（賭けの結果）がすべてのメンバーから見て信用できるものになるための「分権的な」トラスト構造を提案してください。
+1. スピード違反への自動罰金引き落としの例について，政府によるスマートコントラクトに対する統治される側からの安全装置の構成方法を提案してください。
+1. 不特定のメンバーによる賭け事のシステムを，掛け金をトークンとし，賭ける対象をトークンの送金先アドレスとし，結果をトークンの状態遷移として表現する方法で構成してみてください。また，このときオラクル（賭けの結果）のトラストはどのように構成すべきでしょうか。
+1. ニック・サボの論文を読んでください。
+1. Ethereumのwhite paperを読んでください。
+1. 4章を学ぶための前提として数学の知識が必要となります。付録の数学的基礎をすべて読んでください。
 
 ## 回答例
-
-```ruby
-require 'digest'
-
-# SHA-256 の先頭16ビットに限定したハッシュ関数
-def sha(x)
-	Digest::SHA256.hexdigest(x)[0..8]
-end
-
-# ρ法による衝突ペアの探索
-def roh(h0)
-    ppsm,ppdm=h0,h0
-    psm=sha(ppsm)  		# single hash
-    pdm=sha(sha(ppdm))	# double hash
-    sm=sha(psm)  			# single hash
-    dm=sha(sha(pdm))		# double hash
-	begin
-     ppsm,ppdm=psm,pdm
-     psm,pdm=sm,dm
-	  sm=sha(psm)				# single hash
-	  dm=sha(sha(pdm))		# double hash
-	  puts "---"
-     p [ppsm,ppdm]
-     p [psm,pdm]
-	  p [sm,dm]
-	end until sm==dm
-	return [sha(pdm),ppsm]
-end
-roh('0000')
-```
-
