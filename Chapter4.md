@@ -13,26 +13,28 @@
 ```ruby
 require 'digest'
 
-# SHA-256 の先頭40ビットに限定したハッシュ関数
+# SHA-256 の先頭40ビットに限定した暗号学的ハッシュ関数
+
 def sha40(x)
 	Digest::SHA256.hexdigest(x)[0..9]
 end
 
-# ρ法による衝突ペアの探索
+# ρ法による暗号学的ハッシュ関数の衝突ペアの探索
+
 def rho(h0)
     kame,usagi=h0,h0
     begin
-        kame=sha40(kame)            # single hash
-        usagi=sha40(sha40(usagi))   # double hash
-    end until kame==usagi           # loop 1
-    goryu=kame                      # 合流地点
+        kame=sha40(kame)                # single hashの系列
+        usagi=sha40(sha40(usagi))       # double hashの系列
+    end until kame==usagi               # loop の合流
+    goryu=kame                          # 合流地点を記憶
     kame=h0
     begin
-        kame_prev,goryu_prev=kame,goryu
-        kame=sha40(kame_prev)       # h0からスタート
-        goryu=sha40(goryu_prev)     # 合流地点からスタート
-    end until kame==goryu           # ハッシュ値が一致
-    return [kame_prev,goryu_prev]
+        kame_prev,goryu_prev=kame,goryu # 直前のデータ（ハッシュ値の原像）を記憶
+        kame=sha40(kame)                # h0から再スタートする系列
+        goryu=sha40(goryu)              # 合流地点からスタートする系列
+    end until kame==goryu               # ハッシュ値が一致
+    return [kame_prev,goryu_prev]       # ハッシュ値の原像ペアを出力
 end
 
 # 実験
@@ -48,9 +50,11 @@ pair=rho("0000000000")
 
 ### 2. データの配列からマークルルートを計算するプログラムを作成してください。
 
+余力のある人は，データ要素とマークルルートから包含証明をするプログラムも作成してみてください。
+
 ### 2. 回答例
 
-テスト用データの配列の作成(サイズは2のべき乗とします)
+テスト用データ
 
 ```ruby
 data=(1..1000).map{rand(10000).to_s}
