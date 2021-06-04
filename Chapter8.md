@@ -3,9 +3,7 @@
 ## 1. ビットコインの任意のブロックを選択し，そのブロックの Compact Block Filter を確認してみましょう。
 
 Bitcoin Core v0.21.0 から -blockfilterindex=1 -peerblockfilters=1 オプションを指定して起動すると
-Compact Block Filter が生成されます。
-
-<details><summary>Compact Block Filterを有効にしてsignetに接続します。</summary><div>
+ノードでCompact Block Filter が生成され確認できるようになります。
 
     $ ./bitcoind -blockfilterindex=1 -peerblockfilters=1 -signet -daemon
 
@@ -18,8 +16,6 @@ Compact Block Filter が生成されます。
     }
 
 `filter`値が確認できます。
-
-</div></details>
 
 ## ２．1 で選択したブロック内の任意のトランザクションのアウトプットの scriptPubKey がフィルタに含まれることを確認してみましょう。
 
@@ -95,11 +91,10 @@ Bitcoinのフィルタパラメータは以下のとおりです。
   * キー: フィルタが生成されたブロックのブロックハッシュの先頭16バイト
   * 値: scriptPubkey
   
-ここでは、[bitcoinrb](https://github.com/chaintope/bitcoinrb) gemを使って確認します。
+ここでは、[bitcoinrb](https://github.com/chaintope/bitcoinrb) gemを使って確認しています。
 bitcoinrbでは、フィルタに要素が包含されているかどうか検証するためのクラス`Bitcoin::BlockFilter`が提供されていますが、
 今回は、フィルタの処理の仕組みを理解しやすいよう、そのロジックを記載しています。
 
-<details><summary>コードを見る</summary><div>
 ```ruby
 require 'bitcoin'
 require 'siphash'
@@ -153,4 +148,3 @@ n.times do
   end
 end
 ```
-</div></details>
