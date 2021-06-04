@@ -5,7 +5,6 @@
 Bitcoin Core v0.21.0 から -blockfilterindex=1 -peerblockfilters=1 オプションを指定して起動すると
 Compact Block Filter が生成されます。
 
-
 <details><summary>Compact Block Filterを有効にしてsignetに接続します。</summary><div>
 
     $ ./bitcoind -blockfilterindex=1 -peerblockfilters=1 -signet -daemon
@@ -100,6 +99,7 @@ Bitcoinのフィルタパラメータは以下のとおりです。
 bitcoinrbでは、フィルタに要素が包含されているかどうか検証するためのクラス`Bitcoin::BlockFilter`が提供されていますが、
 今回は、フィルタの処理の仕組みを理解しやすいよう、そのロジックを記載しています。
 
+<details><summary>コードを見る</summary><div>
 ```ruby
 require 'bitcoin'
 require 'siphash'
@@ -153,3 +153,4 @@ n.times do
   end
 end
 ```
+</div></details>
