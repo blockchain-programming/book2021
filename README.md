@@ -1,4 +1,4 @@
-# 書籍　ブロックチェーン技術概論
+# ブロックチェーン技術概論 理論と実践
 
 ## はじめに
 
@@ -12,35 +12,35 @@
 ## 目次
 [Chapter 1](/Chapter1.md)　ブロックチェーン技術の原点
 
-Chapter 2　ブロックチェーンの概要
+[Chapter 2](/Chapter2.md)　ブロックチェーンの概要
 
-Chapter 3　スマートコントラクトと分散台帳
+[Chapter 3](/Chapter3.md)　スマートコントラクトと分散台帳
 
-Chapter 4　ブロックチェーンを構成する暗号技術の基礎
+[Chapter 4](/Chapter4.md)　ブロックチェーンを構成する暗号技術の基礎
 
-Chapter 5　ビットコインのシステム構成と仕組み
+[Chapter 5](/Chapter5.md)　ビットコインのシステム構成と仕組み
 
-Chapter 6　ビットコインの仕組みの詳細
+[Chapter 6](/Chapter6.md)　ビットコインの仕組みの詳細
 
-Chapter 7　P2Pネットワーク
+[Chapter 7](/Chapter7.md)　P2Pネットワーク
 
-Chapter 8　さまざまなノード実装
+[Chapter 8](/Chapter8.md)　さまざまなノード実装
 
-Chapter 9　トークンの表現と利用
+[Chapter 9](/Chapter9.md)　トークンの表現と利用
 
-Chapter 10　ブロックチェーンのスケーラビリティ
+[Chapter 10](/Chapter10.md)　ブロックチェーンのスケーラビリティ
 
-Chapter 11　暗号技術とスマートコントラクト
+[Chapter 11](/Chapter11.md)　暗号技術とスマートコントラクト
 
-Chapter 12　ブロックチェーンと匿名化技術
+[Chapter 12](/Chapter12.md)　ブロックチェーンと匿名化技術
 
-Chapter 13　ブロックチェーンを利用したシステム構成
+[Chapter 13](/Chapter13.md)　ブロックチェーンを利用したシステム構成
 
-Chapter 14　ブロックチェーン特有のリスク
+[Chapter 14](/Chapter14.md)　ブロックチェーン特有のリスク
 
-Chapter 15　ブロックチェーンのビジネスへの導入
+[Chapter 15](/Chapter15.md)　ブロックチェーンのビジネスへの導入
 
-付録　数学的基礎
+[付録](/appendix.md)　数学的基礎
 
 
 ## 正誤表
