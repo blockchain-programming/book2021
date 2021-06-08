@@ -5,7 +5,7 @@
 本リポジトリは，講談社より出版された[ブロックチェーン技術概論 理論と実践](https://www.amazon.co.jp/dp/406524093X)
 のサポートページです．
 
-![ブロックチェーン技術概論](https://images-na.ssl-images-amazon.com/images/I/510MQRY5-wS._SX390_BO1,204,203,200_.jpg)
+<img src="https://images-na.ssl-images-amazon.com/images/I/510MQRY5-wS._SX390_BO1,204,203,200_.jpg" width="300"/>
 
 このサポートページには，以下の内容を掲載しています．
 
