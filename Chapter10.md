@@ -13,7 +13,7 @@
 - https://github.com/mit-dci/lit
 - https://github.com/ElementsProject/lightning
 
-2. 山崎・安土・田中「ブロックチェーンプログラミング 仮想通貨入門」pp.314--316, 講談社（2017） を参照してください．
+2. 山崎・安土・田中「ブロックチェーン・プログラミング 仮想通貨入門」pp.314--316, 講談社（2017） を参照してください．
 
 3. 以下に挙げたようなプロジェクトを調査し，試用してみてください．
 - Blockstream（https://blockstream.com/technology/）
