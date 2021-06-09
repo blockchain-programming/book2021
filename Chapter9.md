@@ -26,8 +26,7 @@ https://qiita.com/osada/items/39c63a146c203f4dc751
 - クリプトファンドFabric Venturesの記事 “The Fabric Ventures Investment Thesis” の中の"Types of Tokens"の項目．<br>
 https://medium.com/fabric-ventures/the-fabric-ventures-investment-thesis-6cd08684b467
 
-4. 以下などを参考にしてください．<br>
-https://qiita.com/kyrieleison/items/a5c049097c165cd792bf
+4. [ERC-20 Token Standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md) などを参考にしてください．
 
 5. 以下などを参考にしてください．<br>
 https://qiita.com/amachino/items/8cf609f6345959ffc450
