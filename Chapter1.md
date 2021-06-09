@@ -17,14 +17,16 @@
 
 ### 1. 暗号学的ハッシュ関数 SHA256 のライブラリを利用して，データ"12345" と"12346" のハッシュ値を求めるプログラムを作成してください。
 
-### 1. 回答例　(以下Ruby言語の例）
+#### 回答例　(以下Ruby言語の例）
 
 
 ```ruby
 # SHA256による暗号学的ハッシュ関数の実行
-require 'digest/sha2'
+require 'digest'
+
 Digest::SHA256.hexdigest "12345"
 => "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5"
+
 Digest::SHA256.hexdigest "12346"
 => "34d128f5b3dede622e107438fbefabdf0519ebab21ac7b6f2075f974d09ce524"
 ```
@@ -32,12 +34,12 @@ Digest::SHA256.hexdigest "12346"
 ### 2. データの配列 ["0001","0002","0003","0004"] を入力，IV="0000" として，SHA256によるハッシュチェーンと最終データのハッシュ値を出力するプログラムを作成してください。
 
 
-### 2. 回答例
+#### 回答例
 
 (1) まず手動でハッシュチェーンを作成してみます。
 
 ```ruby
-require 'digest/sha2'
+require 'digest'
 
 # データの配列 ["0001","0002","0003","0004"] がデータ
 # IV="0000" 
@@ -50,6 +52,7 @@ block3="0003"+":"+Digest::SHA256.hexdigest(block2)
 block4="0004"+":"+Digest::SHA256.hexdigest(block3)
 hashchain=[block1, block2, block3, block4]
 lasthash=Digest::SHA256.hexdigest(block4)
+
 # ハッシュチェーン
 hashchain
 => 
@@ -96,7 +99,7 @@ lasthash=Digest::SHA256.hexdigest(blockchain[-1])
 
 ### 3. ハッシュチェーンと最終データのハッシュ値を入力とし，IV="0000" として，ハッシュチェーンの正統性を検証するプログラムを作成してください。
 
-### 3. 回答例
+#### 回答例
 
 検証する内容
 
@@ -132,12 +135,12 @@ verifyhashchain(blockchain,IV,lasthash)
 * 実験を100回繰り返して，ハッシュ値が得られるまでの平均時間と分散を求めてください
 * 平均1秒でターゲット未満のハッシュ値が得られる難易度をできるだけ正確に求めてください。
 
-### 4. 回答例
+#### 回答例
 
 (1)hashcash法の実装
 
 ```ruby
-require 'digest/sha2'
+require 'digest'
 
 # 難易度ターゲットを設定し，ランダムに選んだプルーフオブワークの原像とそのハッシュ値を求める
 
@@ -202,7 +205,7 @@ average2=data2.sum/N
 
 ### 5. サトシ・ナカモト論文を最後まで精読してください。
 
-### 5. 参考
+#### 参考
 
 [https://bitcoin.org/bitcoin.pdf](https://bitcoin.org/bitcoin.pdf)
 
@@ -211,6 +214,6 @@ average2=data2.sum/N
 ただし接続するネットワークは本物の仮想通貨を扱う mainnet ではなく，実験や開発のため のネットワークである signet にしてください。
 
 
-### 6. 参考
+#### 参考
 
 [Bitcoin core Signet ノードの構築](https://github.com/ShigeichiroYamasaki/yamalabo/blob/master/bitcoin-core-signet.md)
