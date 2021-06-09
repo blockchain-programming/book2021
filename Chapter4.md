@@ -16,7 +16,7 @@ require 'digest'
 # SHA-256 の先頭40ビットに限定した暗号学的ハッシュ関数
 
 def sha40(x)
-	Digest::SHA256.hexdigest(x)[0..9]
+    Digest::SHA256.hexdigest(x)[0..9]
 end
 
 # ρ法による暗号学的ハッシュ関数の衝突ペアの探索
@@ -57,13 +57,10 @@ pair=rho("0000000000")
 * テスト用データ
 
 ```ruby
-list=(1..23).map{|n|(n*1000).to_s}
-list2=(1..2000).map{|n|(n*1000).to_s}
+list=(1..2000).map{|n|(n*1000).to_s}
 
 # テストデータの確認
 list
-list2
-
 ```
 
 * マークルルートの作成
@@ -94,12 +91,9 @@ def mroot(leaves)
 end
 
 root=mercle_root(list)
-
-root2=mercle_root(list2)
 ```
 
 * マークルツリーの作成
-    * マークルツリーのノードは，[[hashL, [nodeL, nodeR]],[hashR, [nodeL, nodeR]]]
 
 ```ruby
 require 'digest'
@@ -130,12 +124,9 @@ end
 
 # 実行
 tree=mercle_tree(list)
-tree2=mercle_tree(list2)
 
 # 確認
 tree
-tree2
-
 ```
 
 * マークルパスの構成
@@ -175,9 +166,7 @@ hash=Digest::SHA256.hexdigest("10000")
 hash2=Digest::SHA256.hexdigest("23000")
 
 path=merkle_path(tree,hash)
-path2=merkle_path(tree2,hash2)
 path
-path2
 ```
 
 
@@ -214,11 +203,11 @@ d= SecureRandom.random_number(n-1)
 # 乱数生成
 r= SecureRandom.random_number(n-1)
 
-# コミットメント（自己内部で処理）
+# コミットメントの生成（自己内部で処理するので，送信はしない）
 R=G*r
 
-# 2次元データのR2をスカラーに変換
-R1= (R.x*R.y)%n
+# 2次元データのR2をスカラーに変換（x座標の値だけとりだす）
+R1= R.x
 
 # チャレンジ（自己生成）
 e=Digest::SHA256.hexdigest(R1.to_s).to_i(16)
@@ -231,7 +220,8 @@ s=(r+e*d)%n
 * 検証者の処理
 
 ```ruby
-e=Digest::SHA256.hexdigest(R.to_s).to_i(16)
+R1= R.x
+e=Digest::SHA256.hexdigest(R1.to_s).to_i(16)
 
 # 検証処理
 G*s == R+P*e
@@ -275,11 +265,11 @@ m="世界さんこんにちは"
 # 乱数生成
 r= SecureRandom.random_number(n-1)
 
-# コミットメント（自己内部で処理）
+# チャレンジ
 R=G*r
 
-# 2次元データのRをスカラーに変換
-R1= (R.x*R.y)%n
+# 2次元データのRをスカラーに変換(Rのx座標)
+R1= R.x
 
 # e はメッセージmとスカラー化したRとの連接データのハッシュ値
 e=Digest::SHA256.hexdigest(R1.to_s + m).to_i(16)
@@ -295,8 +285,8 @@ m
 * 検証者の処理
 
 ```ruby
-# 2次元データのRをスカラーに変換
-R1= (R.x*R.y)%n
+# 2次元データのRをスカラーに変換(Rのx座標)
+R1= R.x
 e=Digest::SHA256.hexdigest(R1.to_s+m).to_i(16)
 
 # 検証処理
