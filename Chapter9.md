@@ -28,5 +28,41 @@ https://medium.com/fabric-ventures/the-fabric-ventures-investment-thesis-6cd0868
 
 4. [ERC-20 Token Standard](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md) などを参考にしてください．
 
-5. 以下などを参考にしてください．<br>
-https://qiita.com/amachino/items/8cf609f6345959ffc450
+5. Truffle, OpenZeppelin の環境設定が完了している前提とします．
+
+`contracts` フォルダの中に `MyToken.sol` ファイルを作り，以下のコードを記述します．
+
+```MyToken.sol
+pragma solidity ^0.4.18;                // コンパイル時に使用する Solidity コンパイラのバージョン
+import "zeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
+
+contract MyToken is StandardToken {
+  string public name = "MyToken";       // トークンの名前
+  string public symbol = "MTKN";        // トークンのシンボル名（英略称）
+  uint public decimals = 18;            // 小数点の桁数
+
+  function MyToken(uint initialSupply) public {
+    totalSupply_ = initialSupply;
+    balances[msg.sender] = initialSupply;
+  }
+}
+```
+
+記述した Solidity コードをコンパイルします．
+
+```
+$ truffle compile
+```
+
+次に，`MyToken` コントラクトをデプロイするためのマイグレーションファイルを作ります．`migrations` フォルダの中に　`2_deploy_my_token.js` というファイルを作り，以下のコードを記述します．
+
+```javascript:2_deploy_my_token.js
+const MyToken = artifacts.require('./MyToken.sol')
+
+module.exports = (deployer) => {
+  const initialSupply = 100e18          // トークン発行量（ここでは　100）
+  deployer.deploy(MyToken, initialSupply)
+}
+```
+
+参考: https://qiita.com/amachino/items/8cf609f6345959ffc450
