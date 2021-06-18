@@ -1,37 +1,124 @@
 # 5章 ビットコインのシステム構成と仕組み
 
-## 演習課題
+## 授業資料
 
-1. デフォルトのsignetに接続するBitcoin Core ノードを構築してください1. ．デフォルトのsignet のfaucet からテスト用のビットコインを入手し，トランザクションのライフサイクルに沿ってトランザクションの生成，署名，ブロードキャスト，検証*14を行ってみてください
-3. bitcoin RPC のすべてのAPIの仕様を調べ，bitcoin-cli コマンドなどを使って機能を確認してください。
+### bitcoin core のフルノード
+
+ダウンロードサイト
+
+https://bitcoin.org/ja/download
+
+### メインネットのIBD
+
+インストールしたアプリを起動するとIBDが始まります。
 
 
-## ビットコインネットワークへの接続
 
-
-bitcoin core の bitcoin-cli によるビットコインネットワークの確認例
+### bitcoin core の bitcoin-cli によるビットコインネットワークの確認例
 
  bitcoin-cli のコマンドを使って現在接続しているビットコインネットワークの情報を確認することができます。
 
-* getblockchaininfo
+```bash
+getblockchaininfo
+```
 
 ブロックチェーン情報の取得
 
-* getnetworkinfo
+```bash
+getnetworkinfo
+```
 
 ノードのネットワークへの接続に関する情報
 
-* getconnectioncount
+```bash
+getconnectioncount
+```
+
 
 接続中のノード数
 
-* getpeerinfo
+```bash
+getpeerinfo
+```
 
 接続中のノードの情報一覧
 
-* getnettotals
+```bash
+ getnettotals
+```
 
 ネットワークトラフィック情報
+
+#### ワレット
+
+bitcoin core の bitcoin-cli によるワレットの操作の例
+ bitcoin-cli によるコマンドでbitcoin core のワレットを利用することができます。
+bitcoin core のワレットを使用するためには最初にワレットを作成する必要があります。
+
+```
+createwallet <ワレット名> 
+```
+
+##### ワレットの作成
+
+```bash
+$ bitcoin-cli createwallet alice 
+{
+  "name": "alice",
+  "warning": ""
+}
+```
+
+テスト用のビットコインを入手するためには，自分のビットコインアドレスを生成する必要があります。このときに自分の秘密鍵と公開鍵も生成されています。
+getnewaddress
+
+##### 新規に自分のビットコインアドレスを生成する。
+
+（ワレットの指定が必要）
+
+```bash
+$ bitcoin-cli  -rpcwallet=alice getnewaddress      
+tb1q8h0qf2v6vjjs5ps679tvjlcmlcgm6d0ws5pjnj
+```
+
+自分の公開鍵を見てみましょう。次のコマンドで表示される情報の中の "pubkey":  の部分が公開鍵です。
+getaddressinfo <ビットコインアドレス>
+アドレスに関連する情報（ワレットの指定が必要）
+
+```bash
+$ bitcoin-cli -rpcwallet=alice getaddressinfo tb1q8h0qf2v6vjjs5ps679tvjlcmlcgm6d0ws5pjnj
+{
+  "address": "tb1q8h0qf2v6vjjs5ps679tvjlcmlcgm6d0ws5pjnj",
+...
+  "pubkey": "0366f277f2cf7d036bfee4a8b5ff9316125d0c6de284ab0913c5a0c1abd35a20d4",
+...
+  ]
+}
+```
+
+秘密鍵を見るには次のようにします。
+dumpprivkey <ビットコインアドレス>	
+ビットコインアドレスに対応する秘密鍵の出力
+
+```bash
+$ bitcoin-cli -rpcwallet=alice dumpprivkey tb1q8h0qf2v6vjjs5ps679tvjlcmlcgm6d0ws5pjnj
+cW27thy8ZyWeWAZAx82Zyz1mBbA6L6AifwKhzsPJypWKoadAmzDs
+```
+
+
+## 演習課題
+
+1. デフォルトのsignetに接続するBitcoin Core ノードを構築してください1. デフォルトのsignet のfaucet からテスト用のビットコインを入手し，トランザクションのライフサイクルに沿ってトランザクションの生成，署名，ブロードキャスト，検証を行ってみてください
+3. bitcoin RPC のすべてのAPIの仕様を調べ，bitcoin-cli コマンドなどを使って機能を確認してください。
+
+
+## 1. デフォルトのsignetに接続するBitcoin Core ノードを構築してください
+
+### 回答例
+
+1章の課題６と同様です
+
+[Bitcoin core Signet ノードの構築](https://github.com/ShigeichiroYamasaki/yamalabo/blob/master/bitcoin-core-signet.md)
 
 
 ```bash
@@ -94,66 +181,13 @@ signetの場合，次のような情報が返ってきます。
   "warnings": "This is a pre-release test build - use at your own risk - do not use for mining or merchant applications"
 ```
 
-## ワレット
 
-bitcoin core の bitcoin-cli によるワレットの操作の例
- bitcoin-cli によるコマンドでbitcoin core のワレットを利用することができます。
-bitcoin core のワレットを使用するためには最初にワレットを作成する必要があります。
-
-```
-createwallet <ワレット名> 
-```
-
-### ワレットの作成
-
-```bash
-$ bitcoin-cli createwallet alice 
-{
-  "name": "alice",
-  "warning": ""
-}
-```
-
-テスト用のビットコインを入手するためには，自分のビットコインアドレスを生成する必要があります。このときに自分の秘密鍵と公開鍵も生成されています。
-getnewaddress
-
-### 新規に自分のビットコインアドレスを生成する。
-
-（ワレットの指定が必要）
-
-```bash
-$ bitcoin-cli  -rpcwallet=alice getnewaddress      
-tb1q8h0qf2v6vjjs5ps679tvjlcmlcgm6d0ws5pjnj
-```
-
-自分の公開鍵を見てみましょう。次のコマンドで表示される情報の中の "pubkey":  の部分が公開鍵です。
-getaddressinfo <ビットコインアドレス>
-アドレスに関連する情報（ワレットの指定が必要）
-
-```bash
-$ bitcoin-cli -rpcwallet=alice getaddressinfo tb1q8h0qf2v6vjjs5ps679tvjlcmlcgm6d0ws5pjnj
-{
-  "address": "tb1q8h0qf2v6vjjs5ps679tvjlcmlcgm6d0ws5pjnj",
-...
-  "pubkey": "0366f277f2cf7d036bfee4a8b5ff9316125d0c6de284ab0913c5a0c1abd35a20d4",
-...
-  ]
-}
-```
-
-秘密鍵を見るには次のようにします。
-dumpprivkey <ビットコインアドレス>	
-ビットコインアドレスに対応する秘密鍵の出力
-
-```bash
-$ bitcoin-cli -rpcwallet=alice dumpprivkey tb1q8h0qf2v6vjjs5ps679tvjlcmlcgm6d0ws5pjnj
-cW27thy8ZyWeWAZAx82Zyz1mBbA6L6AifwKhzsPJypWKoadAmzDs
-```
-
+## 2. デフォルトのsignet のfaucet からテスト用のビットコインを入手し，トランザクションのライフサイクルに沿ってトランザクションの生成，署名，ブロードキャスト，検証*14を行ってみてください
 
 ### テスト用ビットコインの入手
 
 signet のfaucet サイトで要求すると，無償でテスト用ビットコインを入手することができます。入手方法は，webページのフィールドに自分のワレットで生成した自分のビットコインアドレスを入れて request ボタンをクリックするだけです。
+
 https://signet.bc-2.jp/
 
 ### 自分のワレットの残高の確認
@@ -430,3 +464,6 @@ $ bitcoin-cli -datadir=signet sendrawtransaction "020000000001019e5af4d2828db203
 ```
 
 10分以上経過後にトランザクション一覧や未使用トランザクション一覧などを行うと送金が確認できるはずです。
+
+## 3. bitcoin RPC のすべてのAPIの仕様を調べ，bitcoin-cli コマンドなどを使って機能を確認してください。
+
