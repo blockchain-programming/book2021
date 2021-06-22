@@ -13,11 +13,11 @@
 - https://github.com/mit-dci/lit
 - https://github.com/ElementsProject/lightning
 
-2. 山崎・安土・田中「ブロックチェーン・プログラミング 仮想通貨入門」pp.314--316, 講談社（2017） を参照してください．
+2. 山崎・安土・田中「[ブロックチェーン・プログラミング 仮想通貨入門](https://bookclub.kodansha.co.jp/product?item=0000148221)」pp.314--316, 講談社（2017） を参照してください．
 
 3. 以下に挙げたようなプロジェクトを調査し，試用してみてください．
-- Blockstream（https://blockstream.com/technology/）
-- Liquid
-- Rootstock
+- Blockstream (https://blockstream.com/sidechains.pdf)
+- Liquid (https://docs.blockstream.com/)
+- Rootstock (https://github.com/RSKSmart)
 
-4. Ethereum2.0プロジェクト（2021年5月時点で進行中）の現状や見通しについて，調査するのが一案です．また，実際に試用してみてください．
+4. Ethereum2.0プロジェクト（https://ethereum.org/en/eth2/ ．2021年6月時点で進行中）の現状や見通しについて，調査するのが一案です．また，実際に試用してみてください．
