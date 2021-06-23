@@ -2,7 +2,7 @@
 
 ## はじめに
 
-本リポジトリは，講談社より出版された[ブロックチェーン技術概論 理論と実践](https://www.amazon.co.jp/dp/406524093X)
+本リポジトリは，講談社より出版された「[ブロックチェーン技術概論 理論と実践](https://www.amazon.co.jp/dp/406524093X)」
 のサポートページです．
 
 <img src="https://images-na.ssl-images-amazon.com/images/I/510MQRY5-wS._SX390_BO1,204,203,200_.jpg" width="300"/>
@@ -36,10 +36,10 @@
 
 ## 正誤表
 
-正誤表は[こちら](/errata.md)．
+正誤表は [こちら](/errata.md) です．お詫びして訂正いたします．
 
 ## Q&A
 
 本書の記載事項に関する質問や疑問などがありましたら，本リポジトリの
 [Issue機能](https://github.com/blockchain-programming/book2021/issues)
-を使って、ご質問ください．
+を使ってご質問ください．
