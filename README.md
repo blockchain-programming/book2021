@@ -2,10 +2,10 @@
 
 ## はじめに
 
-本リポジトリは，講談社より出版された「[ブロックチェーン技術概論 理論と実践](https://www.amazon.co.jp/dp/406524093X)」
+本リポジトリは，講談社より出版された「[ブロックチェーン技術概論 理論と実践](https://bookclub.kodansha.co.jp/product?item=0000353684)」
 のサポートページです．
 
-<img src="https://images-na.ssl-images-amazon.com/images/I/510MQRY5-wS._SX390_BO1,204,203,200_.jpg" width="300"/>
+<img src="https://cv.bkmkn.kodansha.co.jp/9784065240939/9784065240939_obi_w.jpg" width="300"/>
 
 このサポートページには，以下の内容を掲載しています．
 
@@ -43,3 +43,12 @@
 本書の記載事項に関する質問や疑問などがありましたら，本リポジトリの
 [Issue機能](https://github.com/blockchain-programming/book2021/issues)
 を使ってご質問ください．
+
+## 補足情報
+
+本書の各著者の担当章は，以下のとおりです．
+
+- 山崎：1〜6章，付録
+- 安土：7, 8, 11, 12章
+- 金子：9, 10章
+- 長田：13〜15章
