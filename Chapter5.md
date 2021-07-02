@@ -1,6 +1,6 @@
 # 5章 ビットコインのシステム構成と仕組み
 
-## 授業資料
+## 5.1 　Bitcoin Core
 
 ### bitcoin core のフルノード
 
@@ -8,25 +8,73 @@
 
 https://bitcoin.org/ja/download
 
-### メインネットのIBD
+## 5.2 ビットコインノード ピア 
 
 インストールしたアプリを起動するとIBDが始まります。
 
+## 5.3 ビットコインネットワーク
 
+### signet の設定ファイルの例
 
-### bitcoin core の bitcoin-cli によるビットコインネットワークの確認例
+設定ファイル (bitcoin.conf) を編集
 
- bitcoin-cli のコマンドを使って現在接続しているビットコインネットワークの情報を確認することができます。
+1. MacOSX :「ファイル」メニューの 「preferences」..
+1. ubuntu: 「設定」メニューの「オプション」
+1. 「設定ファイルを開く」ボタンをクリック
+1. 設定ファイルを以下のように作成して保存（rpcuserとrpcpasswordは hoge から変更してください）
 
-```bash
-getblockchaininfo
+```
+signet=1
+txindex=1
+daemon=1
+server=1
+rest=1
+[signet]
+rpcuser=hoge
+rpcpassword=hoge
+rpcport=38332
+port=38333
+fallbackfee=0.0002
 ```
 
-ブロックチェーン情報の取得
+### bitcoin-qt の起動
+
+snap でインストールした場合
 
 ```bash
-getnetworkinfo
+bitcoin-core.qt &
 ```
+
+通常インストールの場合
+
+```bash
+bitcoin-qt &
+```
+
+
+### bitcoin-cliコマンドを使ったビットコインネットワークの確認
+
+snap でインストールした場合
+
+```bash
+bitcoin-core.cli ＜コマンド＞
+```
+
+通常インストールの場合
+
+```bash
+bitcoin-cli ＜コマンド＞
+```
+
+
+P2Pネットワークに する情報
+
+```bash
+bitcoin-core.cli getnetworkinfo
+```
+
+接続中のノードの情報一覧
+
 
 ノードのネットワークへの接続に関する情報
 
@@ -49,24 +97,33 @@ getpeerinfo
 
 ネットワークトラフィック情報
 
-#### ワレット
+## 5.4 ビットコインワレット
+
+### bitcoin-cliコマンドによるビットコインワレットの操作
 
 bitcoin core の bitcoin-cli によるワレットの操作の例
  bitcoin-cli によるコマンドでbitcoin core のワレットを利用することができます。
 bitcoin core のワレットを使用するためには最初にワレットを作成する必要があります。
 
+ワレットの作成
+
 ```
 createwallet <ワレット名> 
 ```
 
-##### ワレットの作成
-
 ```bash
-$ bitcoin-cli createwallet alice 
+bitcoin-cli createwallet alice 
+
 {
   "name": "alice",
   "warning": ""
 }
+```
+
+ワレットの一覧
+
+```bash
+listwallets
 ```
 
 テスト用のビットコインを入手するためには，自分のビットコインアドレスを生成する必要があります。このときに自分の秘密鍵と公開鍵も生成されています。

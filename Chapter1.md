@@ -8,12 +8,9 @@
 1. ハッシュチェーンと最終データのハッシュ値を入力とし，IV="0000" として，ハッシュチェーンの正統性を検証するプログラムを作成してください。
 1. 実際に SHA256 による HashCash 法を実装してください。
 1. サトシ・ナカモト論文を最後まで精読してください。
-[https://bitcoin.org/bitcoin.pdf](https://bitcoin.org/bitcoin.pdf)
 1. Bitcoin Core をインストールしてください。
 
-ただし接続するネットワークは本物の仮想通貨を扱う mainnet ではなく，実験や開発のため のネットワークである signet にしてください。
-
-[Bitcoin core Signet ノードの構築](https://github.com/ShigeichiroYamasaki/yamalabo/blob/master/bitcoin-core-signet.md)
+----
 
 ### 1. 暗号学的ハッシュ関数 SHA256 のライブラリを利用して，データ"12345" と"12346" のハッシュ値を求めるプログラムを作成してください。
 
