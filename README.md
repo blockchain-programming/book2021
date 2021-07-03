@@ -17,14 +17,14 @@
 
 各章ごとの課題と解答例：
 
-1. [Chapter 1](/Chapter1.md)　ブロックチェーン技術の原点
-1. [Chapter 2](/Chapter2.md)　ブロックチェーンの概要
-1. [Chapter 3](/Chapter3.md)　スマートコントラクトと分散台帳
-1. [Chapter 4](/Chapter4.md)　ブロックチェーンを構成する暗号技術の基礎
-1. [Chapter 5](/Chapter5.md)　ビットコインのシステム構成と仕組み
-1. [Chapter 6](/Chapter6.md)　ビットコインの仕組みの詳細
-1. [Chapter 7](/Chapter7.md)　P2Pネットワーク
-1. [Chapter 8](/Chapter8.md)　さまざまなノード実装
+1. [Chapter 1](/Chapter01.md)　ブロックチェーン技術の原点
+1. [Chapter 2](/Chapter02.md)　ブロックチェーンの概要
+1. [Chapter 3](/Chapter03.md)　スマートコントラクトと分散台帳
+1. [Chapter 4](/Chapter04.md)　ブロックチェーンを構成する暗号技術の基礎
+1. [Chapter 5](/Chapter05.md)　ビットコインのシステム構成と仕組み
+1. [Chapter 6](/Chapter06.md)　ビットコインの仕組みの詳細
+1. [Chapter 7](/Chapter07.md)　P2Pネットワーク
+1. [Chapter 8](/Chapter08.md)　さまざまなノード実装
 1. [Chapter 9](/Chapter09.md)　トークンの表現と利用
 1. [Chapter 10](/Chapter10.md)　ブロックチェーンのスケーラビリティ
 1. [Chapter 11](/Chapter11.md)　暗号技術とスマートコントラクト
