@@ -835,15 +835,15 @@ tb1qc0xxe80njvjxdf26prp2gluth0ge3840dvensy
 * おつり：0.08999818 - 0.001- 0.00001 = 0.08898818
 
 
-#### 未署名のトランザクションの作成
+### 未署名のトランザクションの作成
 
 ```
 createrawtransaction <inputのJSON形式> <outputのJSON形式>
 ```
 
-inputs
+#### inputのJSON形式
 
-```json
+```
 [
   {                       (json object)
     "txid": "hex",        (string, required) The transaction id
@@ -854,9 +854,9 @@ inputs
 ]
 ```
 
-outputs
+#### outputのJSON形式
 
-```json
+```
 [
   {                       (json object)
     "address": amount,    (numeric or string, required) A key-value pair. The key (string) is the bitcoin address, the value (float or string) is the amount in BTC
