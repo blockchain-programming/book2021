@@ -616,15 +616,25 @@ bitcoin-core.cli listunspent
 
 ### 未署名トランザクションの生成
 
-トランザクションのデータを16進数で返す
+トランザクションのデータを返す
+
+bitcoin.conf の設定で　txindex=1 を設定しているときには，自分のワレットに無いトランザクションも検索可能です。
 
 ```
- getrawtransaction <txid>
+ getrawtransaction <txid> (<true/false>)
 ```
 
 結果
 
 ```
+# オプションがfalseのとき（デフォルト）
+
+トランザクションデータの16進数文字列
+```
+
+
+```
+# オプションがtrue のとき
 {                                    (json object)
   "in_active_chain" : true|false,    (boolean) Whether specified block is in the active chain or not (only present with explicit "blockhash" argument)
   "hex" : "hex",                     (string) The serialized, hex-encoded data for 'txid'
