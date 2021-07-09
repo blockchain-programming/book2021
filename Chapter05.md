@@ -878,14 +878,14 @@ createrawtransaction <inputのJSON形式> <outputのJSON形式>
 ]
 ```
 
-作成するトランザクションの　input　のJSON形式
+作成するトランザクションの　input(UTXO)　のJSON形式の例
 
 
 ```json
 '[{"txid":"50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5","vout":0}]' 
 ```
 
-output のJSON形式
+output のJSON形式の例
 
 ```json
 '[{"tb1qj0596apwztduay0ktk6lnhxxcumfz6mnnsykm3":0.001}, {"tb1qc0xxe80njvjxdf26prp2gluth0ge3840dvensy":0.08898818}]'
