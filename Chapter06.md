@@ -1,108 +1,5 @@
 # 6章 ビットコインの仕組みの詳細
 
-## トランザクションの作成方法の復習
-
-### 未署名のトランザクションの作成
-
-```
-createrawtransaction <inputのJSON形式> <outputのJSON形式>
-```
-#### inputのJSON形式
-
-```
-[
-  {                       (json object)
-    "txid": "hex",        (string, required) The transaction id
-    "vout": n,            (numeric, required) The output number
-    "sequence": n,        (numeric, optional, default=depends on the value of the 'replaceable' and 'locktime' arguments) The sequence number
-  },
-  ...
-]
-```
-
-#### outputのJSON形式
-
-```
-[
-  {                       (json object)
-    "address": amount,    (numeric or string, required) A key-value pair. The key (string) is the bitcoin address, the value (float or string) is the amount in BTC
-  },
-  {                       (json object)
-    "data": "hex",        (string, required) A key-value pair. The key must be "data", the value is hex-encoded data
-  },
-  ...
-]
-```
-
-### トランザクションへのデジタル署名（ワレットの秘密鍵を利用）
-
-```
-signrawtransactionwithwallet <トランザクションの16進数形式>
-```
-
-### トランザクションのブロードキャスト
-
-```
-sendrawtransaction <16進数形式のトランザクション>
-```
-
-### トランザクションの作成例
-
-作成するトランザクションの　input(UTXO)　のJSON形式の例
-
-
-```json
-'[{"txid":"50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5","vout":0}]' 
-```
-
-output のJSON形式の例
-
-```json
-'[{"tb1qj0596apwztduay0ktk6lnhxxcumfz6mnnsykm3":0.001}, {"tb1qc0xxe80njvjxdf26prp2gluth0ge3840dvensy":0.08898818}]'
-```
-
-未署名トランザクションの作成
-
-```bash
-bitcoin-core.cli createrawtransaction  '[{"txid":"50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5","vout":0}]' '[{"tb1qj0596apwztduay0ktk6lnhxxcumfz6mnnsykm3":0.001}, {"tb1qc0xxe80njvjxdf26prp2gluth0ge3840dvensy":0.08898818}]'
-```
-
-```
-0200000001b59f853aecc25ebf06bf93ed21ffc55a6e21f0209371bbe4551342c80008dc500000000000ffffffff02a08601000000000016001493e85d742e12dbce91f65db5f9dcc6c736916b7302c9870000000000160014c3cc6c9df3932466a55a08c2a47f8bbbd1989eaf00000000
-```
-
-トランザクションへのデジタル署名（ワレットの秘密鍵を利用）
-
-```
-bitcoin-core.cli signrawtransactionwithwallet 0200000001b59f853aecc25ebf06bf93ed21ffc55a6e21f0209371bbe4551342c80008dc500000000000ffffffff02a08601000000000016001493e85d742e12dbce91f65db5f9dcc6c736916b7302c9870000000000160014c3cc6c9df3932466a55a08c2a47f8bbbd1989eaf00000000
-```
-
-```
-{
-  "hex": "0200000001b59f853aecc25ebf06bf93ed21ffc55a6e21f0209371bbe4551342c80008dc500000000000ffffffff02a08601000000000016001493e85d742e12dbce91f65db5f9dcc6c736916b7302c9870000000000160014c3cc6c9df3932466a55a08c2a47f8bbbd1989eaf00000000",
-  "complete": false,
-  "errors": [
-    {
-      "txid": "50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5",
-      "vout": 0,
-      "witness": [
-      ],
-      "scriptSig": "",
-      "sequence": 4294967295,
-      "error": "Input not found or already spent"
-    }
-  ]
-}
-```
-
-## bitcoinrb
-
-bitcoinrb はRuby言語によるbitcoin core API をRuby から操作するライブラリです。
-
-[bitcoinrb のインストール方法](https://github.com/ShigeichiroYamasaki/yamalabo/blob/master/bitcoinrb.md)
-
-bitcoinrb の基本操作を
-
 
 ## 6.1 ビットコイン 発コミュニティとBIP
 
@@ -121,7 +18,7 @@ bitcoinrb の基本操作を
 
 *  P2PK
     TXID: 330aac3434b86bbe99df6d9a93da13e687646b1d7d3a6945be2fa015ebe3b90c
-    TXID: c5fe633e6408ac194fbba2c68bd4e8622bcaf9ceb1f29c9efa067ba77bfb424c
+    TXID: 0fb1b6b0480b7b45f265e832b9afa8ec97959a82beb719ea7057ad9eaf5ce4fd
     
 * P2PKH
 
@@ -177,47 +74,36 @@ TXID: 330aac3434b86bbe99df6d9a93da13e687646b1d7d3a6945be2fa015ebe3b90c
 #### input がP2PK
 
 ```json
-TXID: c5fe633e6408ac194fbba2c68bd4e8622bcaf9ceb1f29c9efa067ba77bfb424c
-  "vin": [
+TXID: 0fb1b6b0480b7b45f265e832b9afa8ec97959a82beb719ea7057ad9eaf5ce4fd
+   "vin": [
     {
-      "txid": "bdc50e9a7ab9359dc13fc95940d250105ca231e226658fbafff81ce37fbebbe6",
+...
+
+    {
+      "txid": "330aac3434b86bbe99df6d9a93da13e687646b1d7d3a6945be2fa015ebe3b90c",
       "vout": 0,
       "scriptSig": {
-        "asm": "3046022100d9f4b5253bf47fa7f4635d57a82b30e68e6b8c19345bc1517fe3242b8ce19d14022100b0176844632fa6629ad50231132b80bb68827f490f85e972bcdc436187b684e3[ALL] 0442754a8776ce6c3efa071ffa8819b720f5b3edd3b8e5b1b3a67852f1e6a87925751b26ccbe9ce04e17078db56dc8e9601794703809ebd38f9befa6f07dcefa8d",
-        "hex": "493046022100d9f4b5253bf47fa7f4635d57a82b30e68e6b8c19345bc1517fe3242b8ce19d14022100b0176844632fa6629ad50231132b80bb68827f490f85e972bcdc436187b684e301410442754a8776ce6c3efa071ffa8819b720f5b3edd3b8e5b1b3a67852f1e6a87925751b26ccbe9ce04e17078db56dc8e9601794703809ebd38f9befa6f07dcefa8d"
+        "asm": "3046022100d253be36e401150e912c6c3b4fcadeae46e845ca4adf0f30b1bb21ba5c2b098a0221008a679595140050c74c009fc4c1dc2b77ca08abc9c7f31848be12d543b9bc169a[ALL]",
+        "hex": "493046022100d253be36e401150e912c6c3b4fcadeae46e845ca4adf0f30b1bb21ba5c2b098a0221008a679595140050c74c009fc4c1dc2b77ca08abc9c7f31848be12d543b9bc169a01"
       },
       "sequence": 4294967295
     }
   ],
   "vout": [
     {
-      "value": 0.05000000,
+      "value": 350.00000000,
       "n": 0,
       "scriptPubKey": {
-        "asm": "OP_DUP OP_HASH160 7a82de81eb240e9fbc216408645368e0a4cdc42c OP_EQUALVERIFY OP_CHECKSIG",
-        "hex": "76a9147a82de81eb240e9fbc216408645368e0a4cdc42c88ac",
+        "asm": "OP_DUP OP_HASH160 b8da78f3b1a02948d050fa6ffdfe5c960f6aa527 OP_EQUALVERIFY OP_CHECKSIG",
+        "hex": "76a914b8da78f3b1a02948d050fa6ffdfe5c960f6aa52788ac",
         "reqSigs": 1,
         "type": "pubkeyhash",
         "addresses": [
-          "1CAnDMTJSzwf7py1GKafbz4Kqod7XYkoiY"
-        ]
-      }
-    },
-    {
-      "value": 383.41000000,
-      "n": 1,
-      "scriptPubKey": {
-        "asm": "OP_DUP OP_HASH160 66c1ec75914056b6e33ac710e0e8b7fd9275b5bf OP_EQUALVERIFY OP_CHECKSIG",
-        "hex": "76a91466c1ec75914056b6e33ac710e0e8b7fd9275b5bf88ac",
-        "reqSigs": 1,
-        "type": "pubkeyhash",
-        "addresses": [
-          "1ANLEcvnVX79Zrk2tbULNWjwUpQywqSPqs"
+          "1HrR42k1JRLFvWJcmauqKuRG43ACg2pJRV"
         ]
       }
     }
-  ],
-```
+  ],```
 
 ### P2PKHトランザクションの例
 
@@ -677,12 +563,660 @@ bitcoin-core.cli createrawtransaction  '[{"txid": "c691e521b77f7e59425d9f51b98c9
 ```
 
 
-
-
 ## 6.3 ビットコインアドレス
+
+### ビットコインアドレスの生成
+
+```bash
+getnewaddress <ラベル> <アドレスタイプ>
+```
+
+アドレスタイプ
+
+* legacy
+* bech32
+* p2sh-segwit (後方互換のため，bech32アドレスをP2SHでラップしたアドレス)
+
+### Bech32アドレス
+
+```bash
+bitcoin-core.cli getnewaddress alice bech32
+
+tb1q5vfgy0wxdphchqnfqdwj3kyjxrwmejfqgearsj
+```
+
+### base52 アドレス
+
+```bash
+bitcoin-core.cli getnewaddress 'alice' legacy
+
+mgMrVwM54xDWfMZ3o78taiRTCUg2No76fx
+```
+### p2sh-segwit
+
+```
+bitcoin-core.cli getnewaddress alice p2sh-segwit 
+
+2NBNBEyxMSgDfeSWEKAKiJBirhpHgKTGfGD
+```
+
+### マルチシグアドレスの生成（P2SH, P2WSHの例）
+
+```
+createmultisig <必要署名数> '[<公開鍵1>,<公開鍵2>,...,<公開鍵m>]' <アドレスタイプ>
+```
+
+アドレスタイプ
+
+* legacy
+* bech32
+* p2sh-segwit (後方互換のため，bech32アドレスをP2SHでラップしたアドレス)
+
+```bash
+ bitcoin-core.cli createmultisig 2 '["0284f7b351afa43829e114bb82df27d2edb4c47c137155e9ba637312f09997f7d4","034c753eba402a724142ddb70f13457911309c5779f81c905a5b49d3ab11940b34","03ccca0d6863280825db37ce3fd6dfa290699c2d5532065a2ddab41c021fdd4c55"]' legacy
+```
+
+legacy
+ 
+```json
+{
+  "address": "2N8R8ak8rSL9hCKXGfyMRxKP5oHGBrETtBA",
+  "redeemScript": "52210284f7b351afa43829e114bb82df27d2edb4c47c137155e9ba637312f09997f7d421034c753eba402a724142ddb70f13457911309c5779f81c905a5b49d3ab11940b342103ccca0d6863280825db37ce3fd6dfa290699c2d5532065a2ddab41c021fdd4c5553ae",
+  "descriptor": "sh(multi(2,0284f7b351afa43829e114bb82df27d2edb4c47c137155e9ba637312f09997f7d4,034c753eba402a724142ddb70f13457911309c5779f81c905a5b49d3ab11940b34,03ccca0d6863280825db37ce3fd6dfa290699c2d5532065a2ddab41c021fdd4c55))#npg9ftp7"
+}
+
+```
+
+Bech32
+
+```
+bitcoin-core.cli createmultisig 2 '["0284f7b351afa43829e114bb82df27d2edb4c47c137155e9ba637312f09997f7d4","034c753eba402a724142ddb70f13457911309c5779f81c905a5b49d3ab11940b34","03ccca0d6863280825db37ce3fd6dfa290699c2d5532065a2ddab41c021fdd4c55"]' bech32
+```
+
+```json
+{
+  "address": "tb1qy6txdvdrlxnwjkx0t87eph3zljljw0emcxysldsx4z6fvctxf27shmsf0a",
+  "redeemScript": "52210284f7b351afa43829e114bb82df27d2edb4c47c137155e9ba637312f09997f7d421034c753eba402a724142ddb70f13457911309c5779f81c905a5b49d3ab11940b342103ccca0d6863280825db37ce3fd6dfa290699c2d5532065a2ddab41c021fdd4c5553ae",
+  "descriptor": "wsh(multi(2,0284f7b351afa43829e114bb82df27d2edb4c47c137155e9ba637312f09997f7d4,034c753eba402a724142ddb70f13457911309c5779f81c905a5b49d3ab11940b34,03ccca0d6863280825db37ce3fd6dfa290699c2d5532065a2ddab41c021fdd4c55))#xn99d3lq"
+}
+
+```
+
+### ビットコインアドレスの検証
+
+```
+validateaddress <アドレス>
+```
+
+結果
+
+```
+{                               (json object)
+  "isvalid" : true|false,       (boolean) If the address is valid or not. If not, this is the only property returned.
+  "address" : "str",            (string) The bitcoin address validated
+  "scriptPubKey" : "hex",       (string) The hex-encoded scriptPubKey generated by the address
+  "isscript" : true|false,      (boolean) If the key is a script
+  "iswitness" : true|false,     (boolean) If the address is a witness address
+  "witness_version" : n,        (numeric, optional) The version number of the witness program
+  "witness_program" : "hex"     (string, optional) The hex value of the witness program
+}
+```
+
+* tb1q5vfgy0wxdphchqnfqdwj3kyjxrwmejfqgearsj
+
+```json
+bitcoin-core.cli validateaddress tb1q5vfgy0wxdphchqnfqdwj3kyjxrwmejfqgearsj
+
+{
+  "isvalid": true,
+  "address": "tb1q5vfgy0wxdphchqnfqdwj3kyjxrwmejfqgearsj",
+  "scriptPubKey": "0014a312823dc6686f8b8269035d28d89230ddbcc920",
+  "isscript": false,
+  "iswitness": true,
+  "witness_version": 0,
+  "witness_program": "a312823dc6686f8b8269035d28d89230ddbcc920"
+}
+
+```
+
+* mgMrVwM54xDWfMZ3o78taiRTCUg2No76fx
+
+```json
+bitcoin-core.cli validateaddress mgMrVwM54xDWfMZ3o78taiRTCUg2No76fx
+{
+  "isvalid": true,
+  "address": "mgMrVwM54xDWfMZ3o78taiRTCUg2No76fx",
+  "scriptPubKey": "76a914093f8b6bf43eeaf65c44e80bbbffae251e4a0e8f88ac",
+  "isscript": false,
+  "iswitness": false
+}
+```
+
+* 2NBNBEyxMSgDfeSWEKAKiJBirhpHgKTGfGD
+
+```
+bitcoin-core.cli validateaddress 2NBNBEyxMSgDfeSWEKAKiJBirhpHgKTGfGD
+{
+  "isvalid": true,
+  "address": "2NBNBEyxMSgDfeSWEKAKiJBirhpHgKTGfGD",
+  "scriptPubKey": "a914c6c2e21402e8f9f32eb05ed7e160c08b6f8aeba787",
+  "isscript": true,
+  "iswitness": false
+}
+
+```
+
+* 2N8R8ak8rSL9hCKXGfyMRxKP5oHGBrETtBA
+
+
+```
+bitcoin-core.cli validateaddress 2N8R8ak8rSL9hCKXGfyMRxKP5oHGBrETtBA
+{
+  "isvalid": true,
+  "address": "2N8R8ak8rSL9hCKXGfyMRxKP5oHGBrETtBA",
+  "scriptPubKey": "a914a66988a6e2b380597fb077231c2641cf5f95b46887",
+  "isscript": true,
+  "iswitness": false
+}
+```
+
+* tb1qy6txdvdrlxnwjkx0t87eph3zljljw0emcxysldsx4z6fvctxf27shmsf0a
+
+```
+bitcoin-core.cli validateaddress tb1qy6txdvdrlxnwjkx0t87eph3zljljw0emcxysldsx4z6fvctxf27shmsf0a
+{
+  "isvalid": true,
+  "address": "tb1qy6txdvdrlxnwjkx0t87eph3zljljw0emcxysldsx4z6fvctxf27shmsf0a",
+  "scriptPubKey": "0020269666b1a3f9a6e958cf59fd90de22fcbf273f3bc1890fb606a8b49661664abd",
+  "isscript": true,
+  "iswitness": true,
+  "witness_version": 0,
+  "witness_program": "269666b1a3f9a6e958cf59fd90de22fcbf273f3bc1890fb606a8b49661664abd"
+}
+
+```
 
 
 ## 6.4 トランザクションのタイプと検証スクリプト
+
+### 未署名のトランザクションの作成（復習）
+
+```
+createrawtransaction <inputのJSON形式> <outputのJSON形式>
+```
+
+### トランザクションへのデジタル署名（復習）
+
+```
+signrawtransactionwithwallet <トランザクションの16進数形式>
+```
+
+### トランザクションの作成例
+
+#### P2WPKH（output）
+
+送金先アドレスを　P2WPKH アドレスにすればよい
+
+* tb1q5vfgy0wxdphchqnfqdwj3kyjxrwmejfqgearsj
+* tb1qflpp67jj96dg8mt3gm9sua7r5mumew868jk4y3
+
+
+input(UTXO)　のJSON形式の例
+
+```json
+'[{"txid":"7003aa2517c6b6c18e0f4d9dc51b4018456905e74f6a8e4fdd41e5ce4d89dcfb","vout":0}]' 
+```
+
+output のJSON形式の例
+
+```json
+'[{"tb1q5vfgy0wxdphchqnfqdwj3kyjxrwmejfqgearsj":0.001}, {"tb1qflpp67jj96dg8mt3gm9sua7r5mumew868jk4y3":0.09}]'
+```
+
+未署名トランザクションの作成
+
+```bash
+bitcoin-core.cli createrawtransaction  '[{"txid":"7003aa2517c6b6c18e0f4d9dc51b4018456905e74f6a8e4fdd41e5ce4d89dcfb","vout":0}]' '[{"tb1q5vfgy0wxdphchqnfqdwj3kyjxrwmejfqgearsj":0.001}, {"tb1qflpp67jj96dg8mt3gm9sua7r5mumew868jk4y3":0.09}]'
+
+0200000001fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff02a086010000000000160014a312823dc6686f8b8269035d28d89230ddbcc92040548900000000001600144fc21d7a522e9a83ed7146cb0e77c3a6f9bcb8fa00000000
+```
+
+トランザクションへのデジタル署名（ワレットの秘密鍵を利用）
+
+```
+bitcoin-core.cli signrawtransactionwithwallet 0200000001fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff02a086010000000000160014a312823dc6686f8b8269035d28d89230ddbcc92040548900000000001600144fc21d7a522e9a83ed7146cb0e77c3a6f9bcb8fa00000000
+
+{
+  "hex": "02000000000101fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff02a086010000000000160014a312823dc6686f8b8269035d28d89230ddbcc92040548900000000001600144fc21d7a522e9a83ed7146cb0e77c3a6f9bcb8fa024730440220358a4d36343378493661730ed0c22cedf1abc5f6d62030f554b5447fd49be450022063ddec06461725bb0061f7d00b9b83a40dc03119fa7989490a87ed73982fe9e40121029805218af17819d68ec23c11456606736c5a9b91b6cee591205e7e3f753e4aac00000000",
+  "complete": true
+}
+```
+
+作成したトランザクションの確認
+
+```
+bitcoin-core.cli decoderawtransaction 02000000000101fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff02a086010000000000160014a312823dc6686f8b8269035d28d89230ddbcc92040548900000000001600144fc21d7a522e9a83ed7146cb0e77c3a6f9bcb8fa024730440220358a4d36343378493661730ed0c22cedf1abc5f6d62030f554b5447fd49be450022063ddec06461725bb0061f7d00b9b83a40dc03119fa7989490a87ed73982fe9e40121029805218af17819d68ec23c11456606736c5a9b91b6cee591205e7e3f753e4aac00000000
+
+{
+  "txid": "89c3d9b43adc18eb9695fb8b7f4e8ff6f5fcf9070118167f0689d5e52b39da59",
+  "hash": "31cd47ef73b21ff3dd1055efdaff792ed2c00c66f78beead9f57da6a17683dce",
+  "version": 2,
+  "size": 222,
+  "vsize": 141,
+  "weight": 561,
+  "locktime": 0,
+  "vin": [
+    {
+      "txid": "7003aa2517c6b6c18e0f4d9dc51b4018456905e74f6a8e4fdd41e5ce4d89dcfb",
+      "vout": 0,
+      "scriptSig": {
+        "asm": "",
+        "hex": ""
+      },
+      "txinwitness": [
+        "30440220358a4d36343378493661730ed0c22cedf1abc5f6d62030f554b5447fd49be450022063ddec06461725bb0061f7d00b9b83a40dc03119fa7989490a87ed73982fe9e401",
+        "029805218af17819d68ec23c11456606736c5a9b91b6cee591205e7e3f753e4aac"
+      ],
+      "sequence": 4294967295
+    }
+  ],
+  "vout": [
+    {
+      "value": 0.00100000,
+      "n": 0,
+      "scriptPubKey": {
+        "asm": "0 a312823dc6686f8b8269035d28d89230ddbcc920",
+        "hex": "0014a312823dc6686f8b8269035d28d89230ddbcc920",
+        "reqSigs": 1,
+        "type": "witness_v0_keyhash",
+        "addresses": [
+          "tb1q5vfgy0wxdphchqnfqdwj3kyjxrwmejfqgearsj"
+        ]
+      }
+    },
+    {
+      "value": 0.09000000,
+      "n": 1,
+      "scriptPubKey": {
+        "asm": "0 4fc21d7a522e9a83ed7146cb0e77c3a6f9bcb8fa",
+        "hex": "00144fc21d7a522e9a83ed7146cb0e77c3a6f9bcb8fa",
+        "reqSigs": 1,
+        "type": "witness_v0_keyhash",
+        "addresses": [
+          "tb1qflpp67jj96dg8mt3gm9sua7r5mumew868jk4y3"
+        ]
+      }
+    }
+  ]
+}
+```
+
+
+#### P2PKH（output）
+
+送金先アドレスを　P2PKH アドレスにすればよい
+
+* mhpvREwaqf5vF6y4L3nFRBQ88DmgKLbqVu
+* n2T8oGvosrY6Yi3uzrTb8hqKzBqXggABy8
+
+
+input(UTXO)　のJSON形式の例
+
+```json
+'[{"txid":"7003aa2517c6b6c18e0f4d9dc51b4018456905e74f6a8e4fdd41e5ce4d89dcfb","vout":0}]' 
+```
+
+output のJSON形式の例
+
+```json
+'[{"mhpvREwaqf5vF6y4L3nFRBQ88DmgKLbqVu":0.001}, {"n2T8oGvosrY6Yi3uzrTb8hqKzBqXggABy8":0.09}]'
+```
+
+未署名トランザクションの作成
+
+```bash
+bitcoin-core.cli createrawtransaction  '[{"txid":"7003aa2517c6b6c18e0f4d9dc51b4018456905e74f6a8e4fdd41e5ce4d89dcfb","vout":0}]' '[{"mhpvREwaqf5vF6y4L3nFRBQ88DmgKLbqVu":0.001}, {"n2T8oGvosrY6Yi3uzrTb8hqKzBqXggABy8":0.09}]'
+
+
+0200000001fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff02a0860100000000001976a91419562c3ce4a9404c0318e5bcc47d393d272cff3a88ac40548900000000001976a914e5a1bee9f532669fc8d8f28e1879ef724f81e70f88ac00000000
+```
+
+トランザクションへのデジタル署名（ワレットの秘密鍵を利用）
+
+```
+bitcoin-core.cli signrawtransactionwithwallet 0200000001fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff02a0860100000000001976a91419562c3ce4a9404c0318e5bcc47d393d272cff3a88ac40548900000000001976a914e5a1bee9f532669fc8d8f28e1879ef724f81e70f88ac00000000
+{
+  "hex": "02000000000101fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff02a0860100000000001976a91419562c3ce4a9404c0318e5bcc47d393d272cff3a88ac40548900000000001976a914e5a1bee9f532669fc8d8f28e1879ef724f81e70f88ac02473044022026fbca6d059e55be5bee9a2319690e77bdfaaea1ee61fa310785dc1bca9dd64a0220775eb0528e6c5e25fd993a0c2a738d9482538db129eb9197c0d025eba285cde90121029805218af17819d68ec23c11456606736c5a9b91b6cee591205e7e3f753e4aac00000000",
+  "complete": true
+}
+
+```
+
+作成したトランザクションの確認
+
+```
+bitcoin-core.cli decoderawtransaction 02000000000101fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff02a0860100000000001976a91419562c3ce4a9404c0318e5bcc47d393d272cff3a88ac40548900000000001976a914e5a1bee9f532669fc8d8f28e1879ef724f81e70f88ac02473044022026fbca6d059e55be5bee9a2319690e77bdfaaea1ee61fa310785dc1bca9dd64a0220775eb0528e6c5e25fd993a0c2a738d9482538db129eb9197c0d025eba285cde90121029805218af17819d68ec23c11456606736c5a9b91b6cee591205e7e3f753e4aac00000000
+
+
+{
+  "txid": "e069f29b1823a2b2fc8ea1c109dcd117f6e010773d585d92d2b9565bc544d2b0",
+  "hash": "4e1ccf736e0572005ee694dd42c9ffd46dbd6103edc1247dea6e278304b6b137",
+  "version": 2,
+  "size": 228,
+  "vsize": 147,
+  "weight": 585,
+  "locktime": 0,
+  "vin": [
+    {
+      "txid": "7003aa2517c6b6c18e0f4d9dc51b4018456905e74f6a8e4fdd41e5ce4d89dcfb",
+      "vout": 0,
+      "scriptSig": {
+        "asm": "",
+        "hex": ""
+      },
+      "txinwitness": [
+        "3044022026fbca6d059e55be5bee9a2319690e77bdfaaea1ee61fa310785dc1bca9dd64a0220775eb0528e6c5e25fd993a0c2a738d9482538db129eb9197c0d025eba285cde901",
+        "029805218af17819d68ec23c11456606736c5a9b91b6cee591205e7e3f753e4aac"
+      ],
+      "sequence": 4294967295
+    }
+  ],
+  "vout": [
+    {
+      "value": 0.00100000,
+      "n": 0,
+      "scriptPubKey": {
+        "asm": "OP_DUP OP_HASH160 19562c3ce4a9404c0318e5bcc47d393d272cff3a OP_EQUALVERIFY OP_CHECKSIG",
+        "hex": "76a91419562c3ce4a9404c0318e5bcc47d393d272cff3a88ac",
+        "reqSigs": 1,
+        "type": "pubkeyhash",
+        "addresses": [
+          "mhpvREwaqf5vF6y4L3nFRBQ88DmgKLbqVu"
+        ]
+      }
+    },
+    {
+      "value": 0.09000000,
+      "n": 1,
+      "scriptPubKey": {
+        "asm": "OP_DUP OP_HASH160 e5a1bee9f532669fc8d8f28e1879ef724f81e70f OP_EQUALVERIFY OP_CHECKSIG",
+        "hex": "76a914e5a1bee9f532669fc8d8f28e1879ef724f81e70f88ac",
+        "reqSigs": 1,
+        "type": "pubkeyhash",
+        "addresses": [
+          "n2T8oGvosrY6Yi3uzrTb8hqKzBqXggABy8"
+        ]
+      }
+    }
+  ]
+}
+
+```
+
+
+#### P2WSH（output）
+
+送金先アドレスを　P2WSH アドレスにすればよい
+
+* tb1qy6txdvdrlxnwjkx0t87eph3zljljw0emcxysldsx4z6fvctxf27shmsf0a
+
+
+
+input(UTXO)　のJSON形式の例
+
+```json
+'[{"txid":"7003aa2517c6b6c18e0f4d9dc51b4018456905e74f6a8e4fdd41e5ce4d89dcfb","vout":0}]' 
+```
+
+output のJSON形式の例
+
+```json
+'[{"tb1qy6txdvdrlxnwjkx0t87eph3zljljw0emcxysldsx4z6fvctxf27shmsf0a":0.099}]'
+```
+
+
+未署名トランザクションの作成
+
+```bash
+bitcoin-core.cli createrawtransaction  '[{"txid":"7003aa2517c6b6c18e0f4d9dc51b4018456905e74f6a8e4fdd41e5ce4d89dcfb","vout":0}]' '[{"tb1qy6txdvdrlxnwjkx0t87eph3zljljw0emcxysldsx4z6fvctxf27shmsf0a":0.099}]'
+
+
+0200000001fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff01e00f970000000000220020269666b1a3f9a6e958cf59fd90de22fcbf273f3bc1890fb606a8b49661664abd00000000
+```
+
+トランザクションへのデジタル署名（ワレットの秘密鍵を利用）
+
+```
+bitcoin-core.cli signrawtransactionwithwallet 0200000001fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff01e00f970000000000220020269666b1a3f9a6e958cf59fd90de22fcbf273f3bc1890fb606a8b49661664abd00000000
+
+
+{
+  "hex": "02000000000101fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff01e00f970000000000220020269666b1a3f9a6e958cf59fd90de22fcbf273f3bc1890fb606a8b49661664abd02473044022062253413a98e0b43c4c27edd558c062951b5ba77da65b8213529d14ac17c124d02204eb484e789db7f9e3e17b145b6f551cf8a1b6d5f92e6f6e28360922d27b7ccbd0121029805218af17819d68ec23c11456606736c5a9b91b6cee591205e7e3f753e4aac00000000",
+  "complete": true
+}
+```
+
+作成したトランザクションの確認
+
+```
+bitcoin-core.cli decoderawtransaction 02000000000101fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff01e00f970000000000220020269666b1a3f9a6e958cf59fd90de22fcbf273f3bc1890fb606a8b49661664abd02473044022062253413a98e0b43c4c27edd558c062951b5ba77da65b8213529d14ac17c124d02204eb484e789db7f9e3e17b145b6f551cf8a1b6d5f92e6f6e28360922d27b7ccbd0121029805218af17819d68ec23c11456606736c5a9b91b6cee591205e7e3f753e4aac00000000
+
+
+{
+  "txid": "7ef607897d2127f39cf8686299bc1f45ae453f6e1a8a9d0feb0aa88201402835",
+  "hash": "32a67fb6ff2c26b1c1edf4ba3be3f6dd552995dcafed9c2b61d8feaecb950cf0",
+  "version": 2,
+  "size": 203,
+  "vsize": 122,
+  "weight": 485,
+  "locktime": 0,
+  "vin": [
+    {
+      "txid": "7003aa2517c6b6c18e0f4d9dc51b4018456905e74f6a8e4fdd41e5ce4d89dcfb",
+      "vout": 0,
+      "scriptSig": {
+        "asm": "",
+        "hex": ""
+      },
+      "txinwitness": [
+        "3044022062253413a98e0b43c4c27edd558c062951b5ba77da65b8213529d14ac17c124d02204eb484e789db7f9e3e17b145b6f551cf8a1b6d5f92e6f6e28360922d27b7ccbd01",
+        "029805218af17819d68ec23c11456606736c5a9b91b6cee591205e7e3f753e4aac"
+      ],
+      "sequence": 4294967295
+    }
+  ],
+  "vout": [
+    {
+      "value": 0.09900000,
+      "n": 0,
+      "scriptPubKey": {
+        "asm": "0 269666b1a3f9a6e958cf59fd90de22fcbf273f3bc1890fb606a8b49661664abd",
+        "hex": "0020269666b1a3f9a6e958cf59fd90de22fcbf273f3bc1890fb606a8b49661664abd",
+        "reqSigs": 1,
+        "type": "witness_v0_scripthash",
+        "addresses": [
+          "tb1qy6txdvdrlxnwjkx0t87eph3zljljw0emcxysldsx4z6fvctxf27shmsf0a"
+        ]
+      }
+    }
+  ]
+}
+```
+
+#### P2SH（output）
+
+送金先アドレスを　P2SH アドレスにすればよい
+
+* 2N8R8ak8rSL9hCKXGfyMRxKP5oHGBrETtBA
+
+input(UTXO)　のJSON形式の例
+
+```json
+'[{"txid":"7003aa2517c6b6c18e0f4d9dc51b4018456905e74f6a8e4fdd41e5ce4d89dcfb","vout":0}]' 
+```
+
+output のJSON形式の例
+
+```json
+'[{"2N8R8ak8rSL9hCKXGfyMRxKP5oHGBrETtBA":0.099}]'
+```
+
+未署名トランザクションの作成
+
+```bash
+bitcoin-core.cli createrawtransaction  '[{"txid":"7003aa2517c6b6c18e0f4d9dc51b4018456905e74f6a8e4fdd41e5ce4d89dcfb","vout":0}]' '[{"2N8R8ak8rSL9hCKXGfyMRxKP5oHGBrETtBA":0.099}]'
+
+
+0200000001fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff01e00f97000000000017a914a66988a6e2b380597fb077231c2641cf5f95b4688700000000
+```
+
+トランザクションへのデジタル署名（ワレットの秘密鍵を利用）
+
+```
+bitcoin-core.cli signrawtransactionwithwallet 0200000001fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff01e00f97000000000017a914a66988a6e2b380597fb077231c2641cf5f95b4688700000000
+
+
+{
+  "hex": "02000000000101fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff01e00f97000000000017a914a66988a6e2b380597fb077231c2641cf5f95b468870247304402204960716c656625decf7772c4803f9d1e0961a34b0921dc8c1916982b55c4fef802206497788028d6ca817718d42104a5e7a60a1d7b3cea3629b7b86c746fafbe82140121029805218af17819d68ec23c11456606736c5a9b91b6cee591205e7e3f753e4aac00000000",
+  "complete": true
+}
+```
+
+作成したトランザクションの確認
+
+```
+bitcoin-core.cli decoderawtransaction 02000000000101fbdc894dcee541dd4f8e6a4fe705694518401bc59d4d0f8ec1b6c61725aa03700000000000ffffffff01e00f97000000000017a914a66988a6e2b380597fb077231c2641cf5f95b468870247304402204960716c656625decf7772c4803f9d1e0961a34b0921dc8c1916982b55c4fef802206497788028d6ca817718d42104a5e7a60a1d7b3cea3629b7b86c746fafbe82140121029805218af17819d68ec23c11456606736c5a9b91b6cee591205e7e3f753e4aac00000000
+
+
+{
+  "txid": "3a6809dfdc6c90eddb2d2210f6b708bca66a6a37e048ed96b091dfdf87a3f9b2",
+  "hash": "8e5410315c6d946bc1289a6d2186ac107692d6c90d2f0e9586d54fb58fa53032",
+  "version": 2,
+  "size": 192,
+  "vsize": 111,
+  "weight": 441,
+  "locktime": 0,
+  "vin": [
+    {
+      "txid": "7003aa2517c6b6c18e0f4d9dc51b4018456905e74f6a8e4fdd41e5ce4d89dcfb",
+      "vout": 0,
+      "scriptSig": {
+        "asm": "",
+        "hex": ""
+      },
+      "txinwitness": [
+        "304402204960716c656625decf7772c4803f9d1e0961a34b0921dc8c1916982b55c4fef802206497788028d6ca817718d42104a5e7a60a1d7b3cea3629b7b86c746fafbe821401",
+        "029805218af17819d68ec23c11456606736c5a9b91b6cee591205e7e3f753e4aac"
+      ],
+      "sequence": 4294967295
+    }
+  ],
+  "vout": [
+    {
+      "value": 0.09900000,
+      "n": 0,
+      "scriptPubKey": {
+        "asm": "OP_HASH160 a66988a6e2b380597fb077231c2641cf5f95b468 OP_EQUAL",
+        "hex": "a914a66988a6e2b380597fb077231c2641cf5f95b46887",
+        "reqSigs": 1,
+        "type": "scripthash",
+        "addresses": [
+          "2N8R8ak8rSL9hCKXGfyMRxKP5oHGBrETtBA"
+        ]
+      }
+    }
+  ]
+}
+```
+
+#### P2PK（output）（難易度が高い！）
+
+bitcoin core のAPIでは　P2PKのトランザクション作成機能は削除されているので，自分で構成する必要があります。
+
+* ScriptPubkeyの最後の１バイトは， OP_CHECKSIG (１６進数で ac)
+* valueの値は送金金額の単位が 1億分の1 BTC 
+* valueの値はリトルエンディアンであることに注意が必要です。
+
+```
+50.0btc=5000000000
+16進数では，0x12a05f200
+8バイトのリトルエンディアン表現にすると
+00f2052a01000000
+```
+
+* input (コインベース)
+
+簡単にするため，以下のようなインプットが空のコインベーストランザクションとします。
+
+```
+version: 01000000
+input数: 01
+参照トランザクションハッシュ: 0000000000000000000000000000000000000000000000000000000000000000
+index: ffffffff
+coinbase data bytes: 02
+coinbase data: 0000
+sequence: ffffffff
+```
+
+連結
+
+```
+01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff020000ffffffff
+```
+
+* output の例
+
+```
+output数: 01
+value: 00f2052a01000000
+scriputPubKeyのバイト数: 23
+scriputPubKey：21(公開鍵のバイト数 16進数）
+    公開鍵: 023d5aeb5d6ad8f3c9db4ce795250bf8944c1a3aa6c0f2f2a5f306222d08c4aeb0
+    OP_CHECKSIG: ac
+nlocktime: 00000000
+```
+
+連結
+
+```
+01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff020000ffffffff0100f2052a010000002321023d5aeb5d6ad8f3c9db4ce795250bf8944c1a3aa6c0f2f2a5f306222d08c4aeb0ac00000000
+ 
+```
+
+作成したトランザクションの確認
+
+```
+bitcoin-core.cli decoderawtransaction 01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff020000ffffffff0100f2052a010000002321023d5aeb5d6ad8f3c9db4ce795250bf8944c1a3aa6c0f2f2a5f306222d08c4aeb0ac00000000
+ 
+
+{
+  "txid": "d2eb5df7709a98ba87d686049fba765a42979029781d4c16c2469fa4ee52b62e",
+  "hash": "d2eb5df7709a98ba87d686049fba765a42979029781d4c16c2469fa4ee52b62e",
+  "version": 1,
+  "size": 97,
+  "vsize": 97,
+  "weight": 388,
+  "locktime": 0,
+  "vin": [
+    {
+      "coinbase": "0000",
+      "sequence": 4294967295
+    }
+  ],
+  "vout": [
+    {
+      "value": 50.00000000,
+      "n": 0,
+      "scriptPubKey": {
+        "asm": "023d5aeb5d6ad8f3c9db4ce795250bf8944c1a3aa6c0f2f2a5f306222d08c4aeb0 OP_CHECKSIG",
+        "hex": "21023d5aeb5d6ad8f3c9db4ce795250bf8944c1a3aa6c0f2f2a5f306222d08c4aeb0ac",
+        "type": "pubkey"
+      }
+    }
+  ]
+}
+```
+
 
 ## 6.5 ビットコインスクリプトの応用例
 
@@ -703,6 +1237,16 @@ bitcoin-core.cli createrawtransaction  '[{"txid": "c691e521b77f7e59425d9f51b98c9
 
 ### 回答例
 
+#### signet を利用
+
+*  UTXO
+    *  "txid": "7003aa2517c6b6c18e0f4d9dc51b4018456905e74f6a8e4fdd41e5ce4d89dcfb"
+    *   "vout": 0
+
+* TxOut
+    * P2WPKH "tb1qzdhc0u52q5k3p5mke2nqdsau5rytdr6q6m74gn"
+    * 
+
 
 
 
@@ -713,3 +1257,85 @@ bitcoin-core.cli createrawtransaction  '[{"txid": "c691e521b77f7e59425d9f51b98c9
 ## 3. 実際にアトミックスワップを行うトランザクションを作成し，アトミックスワップを実施してみてください。
 
 ### 回答例
+
+
+---
+# bitcoinrb の使い方
+
+bitcoinrb はRuby言語によるbitcoin core API をRuby から操作するライブラリです。
+
+[bitcoinrb のインストール方法](https://github.com/ShigeichiroYamasaki/yamalabo/blob/master/bitcoinrb.md)
+
+bitcoinrb の基本操作を習得しておいてください。
+
+### ビットコインスクリプト
+
+bitcoinrb
+
+```ruby
+require 'bitcoin'
+
+script="2 3 OP_ADD 5 OP_EQUAL"
+s=Bitcoin::Script.from_string(script)
+s.run
+=> true
+
+txid="50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5"
+script="#{txid} OP_HASH160"
+s=Bitcoin::Script.from_string(script)
+s.debug
+```
+
+### トランザクション作成
+
+#### 自分が所持しているUTXOを確認する
+
+送金に使用するTXIDとvout を確認します。
+
+```json
+ bitcoin-core.cli listunspent
+ 
+[ {
+    "txid": "50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5",
+    "vout": 1,
+    "address": "tb1qfdmuhak44h3akp0dx6q5qpytuta6e6888mjlw4",
+    "label": "",
+    "scriptPubKey": "00144b77cbf6d5ade3db05ed368140048be2fbace8e7",
+    "amount": 0.01000000,
+    "confirmations": 712,
+    "spendable": true,
+    "solvable": true,
+    "desc": "wpkh([bc02bd98/0'/0'/0']0336c2710513b6182697a2b9ce8e6f6e8dae2b568ac32b27b45f142a2b6697005c)#z4fmc5jj",
+    "safe": true
+  }
+  ]
+```
+
+bitcoinrb でsignet のbitcoin core RPC API を利用します。
+
+```ruby
+require 'bitcoin'
+Bitcoin.chain_params = :signet
+
+require 'net/http'
+require 'json'
+RPCUSER="hoge"
+RPCPASSWORD="hoge"
+HOST="localhost"
+PORT=38332
+ 
+def bitcoinRPC(method, params)
+ 	http = Net::HTTP.new(HOST, PORT)
+ 	request = Net::HTTP::Post.new('/')
+ 	request.basic_auth(RPCUSER, RPCPASSWORD)
+ 	request.content_type = 'application/json'
+ 	request.body = { method: method, params: params, id: 'jsonrpc' }.to_json
+ 	JSON.parse(http.request(request).body)["result"]
+end
+```
+
+
+```ruby
+tx = Bitcoin::Tx.new
+
+```
