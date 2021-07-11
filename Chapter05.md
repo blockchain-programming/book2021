@@ -614,9 +614,8 @@ bitcoin-core.cli listunspent
 
 ## 5.5 トランザクション
 
-### 未署名トランザクションの生成
 
-トランザクションのデータを返す
+#### トランザクションのデータを検索する
 
 bitcoin.conf の設定で　txindex=1 を設定しているときには，自分のワレットに無いトランザクションも検索可能です。
 
@@ -891,7 +890,7 @@ output のJSON形式の例
 '[{"tb1qj0596apwztduay0ktk6lnhxxcumfz6mnnsykm3":0.001}, {"tb1qc0xxe80njvjxdf26prp2gluth0ge3840dvensy":0.08898818}]'
 ```
 
-#### トランザクションの作成
+#### 未署名のトランザクションの作成
 
 ```bash
 bitcoin-core.cli createrawtransaction  '[{"txid":"50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5","vout":0}]' '[{"tb1qj0596apwztduay0ktk6lnhxxcumfz6mnnsykm3":0.001}, {"tb1qc0xxe80njvjxdf26prp2gluth0ge3840dvensy":0.08898818}]'
@@ -902,7 +901,7 @@ bitcoin-core.cli createrawtransaction  '[{"txid":"50dc0800c8421355e4bb719320f021
 0200000001b59f853aecc25ebf06bf93ed21ffc55a6e21f0209371bbe4551342c80008dc500000000000ffffffff02a08601000000000016001493e85d742e12dbce91f65db5f9dcc6c736916b7302c9870000000000160014c3cc6c9df3932466a55a08c2a47f8bbbd1989eaf00000000
 ```
 
-#### 作成したトランザクションの確認
+#### 作成した未署名トランザクションの確認
 
 ```bash
 bitcoin-core.cli  decoderawtransaction 0200000001b59f853aecc25ebf06bf93ed21ffc55a6e21f0209371bbe4551342c80008dc500000000000ffffffff02a08601000000000016001493e85d742e12dbce91f65db5f9dcc6c736916b7302c9870000000000160014c3cc6c9df3932466a55a08c2a47f8bbbd1989eaf00000000
@@ -959,21 +958,11 @@ bitcoin-core.cli  decoderawtransaction 0200000001b59f853aecc25ebf06bf93ed21ffc55
 }
 ```
 
-### トランザクションのブロードキャスト
-
-```
-sendrawtransaction <16進数形式のトランザクション>
-```
-
-```bash
-# 実行例
-bitcoin-core.cli sendrawtransaction 0200000001da66dcec01a96e07a903943cc04c56d1ad0696eb7aecbc5f898a1db665194e040000000000ffffffff02a08601000000000016001414824401c0a890da852bf3b2d49954619ff16cbed0e8960000000000160014a32006e4fd9b3af9bc3558e8acf79ecef4aecca300000000
-```
 
 ### トランザクションへのデジタル署名（ワレットの秘密鍵を利用）
 
 ```
-signrawtransactionwithwallet <トランザクションの16進数形式>
+signrawtransactionwithwallet <未署名トランザクションの16進数形式>
 ```
 
 結果
