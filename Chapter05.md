@@ -1588,6 +1588,94 @@ bitcoin-core.daemon &
 
 [RPC API Reference](https://developer.bitcoin.org/reference/rpc/)
 
+--
+
+# 付録
+
+## bitcoinrb の使い方
+
+bitcoinrb はRuby言語によるbitcoin core API をRuby から操作するライブラリです。
+
+[bitcoinrb のインストール方法](https://github.com/ShigeichiroYamasaki/yamalabo/blob/master/bitcoinrb.md)
+
+bitcoinrb の基本操作を習得しておいてください。
+
+### ビットコインスクリプト
+
+bitcoinrb
+
+```ruby
+require 'bitcoin'
+
+script="2 3 OP_ADD 5 OP_EQUAL"
+s=Bitcoin::Script.from_string(script)
+s.run
+=> true
+
+txid="50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5"
+script="#{txid} OP_HASH160"
+s=Bitcoin::Script.from_string(script)
+s.debug
+```
+
+### トランザクション作成
+
+#### 自分が所持しているUTXOを確認する
+
+送金に使用するTXIDとvout を確認します。
+
+```json
+ bitcoin-core.cli listunspent
+ 
+[ {
+    "txid": "50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5",
+    "vout": 1,
+    "address": "tb1qfdmuhak44h3akp0dx6q5qpytuta6e6888mjlw4",
+    "label": "",
+    "scriptPubKey": "00144b77cbf6d5ade3db05ed368140048be2fbace8e7",
+    "amount": 0.01000000,
+    "confirmations": 712,
+    "spendable": true,
+    "solvable": true,
+    "desc": "wpkh([bc02bd98/0'/0'/0']0336c2710513b6182697a2b9ce8e6f6e8dae2b568ac32b27b45f142a2b6697005c)#z4fmc5jj",
+    "safe": true
+  }
+  ]
+```
+
+bitcoinrb でsignet のbitcoin core RPC API を利用します。
+
+```ruby
+require 'bitcoin'
+Bitcoin.chain_params = :signet
+
+require 'net/http'
+require 'json'
+RPCUSER="hoge"
+RPCPASSWORD="hoge"
+HOST="localhost"
+PORT=38332
+ 
+def bitcoinRPC(method, params)
+ 	http = Net::HTTP.new(HOST, PORT)
+ 	request = Net::HTTP::Post.new('/')
+ 	request.basic_auth(RPCUSER, RPCPASSWORD)
+ 	request.content_type = 'application/json'
+ 	request.body = { method: method, params: params, id: 'jsonrpc' }.to_json
+ 	JSON.parse(http.request(request).body)["result"]
+end
+```
+
+
+```ruby
+tx = Bitcoin::Tx.new
+
+```
+
+----
+
+## bitcoin RPC API
+
 * Blockchain RPCs
     * getbestblockhash
     * getblock
