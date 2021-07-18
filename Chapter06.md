@@ -1447,26 +1447,20 @@ bitcoin-core.cli decoderawtransaction 02000000017e04eaf02015f602c87d8ec300a95ed0
 
 ### 回答例
 
-#### signet を利用
-
-*  UTXO
-    *  "txid": "7003aa2517c6b6c18e0f4d9dc51b4018456905e74f6a8e4fdd41e5ce4d89dcfb"
-    *   "vout": 0
-
-* TxOut
-    * P2WPKH "tb1qzdhc0u52q5k3p5mke2nqdsau5rytdr6q6m74gn"
-    * 
-
-
+6.2, 6.3, 6.4.1~6.4.7 で説明
 
 
 ## 2. P2PK，P2PKH，P2SH，P2WPKH，P2WPSHのUTXOをinputとするトランザクションを作成してください。outputのタイプはP2WPKHとします。
 
 ### 回答例
 
+6.4.8 で説明
+
 ## 3. 実際にアトミックスワップを行うトランザクションを作成し，アトミックスワップを実施してみてください。
 
 ### 回答例
+
+
 
 ---
 ## 付録
