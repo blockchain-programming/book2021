@@ -8,7 +8,7 @@
 * [BIP](https://github.com/bitcoin/bips)
 
 
-## 6.2 6.3 6.4 6.5 を一連の流れで演習します　(書籍の節の構成と異なっています)
+## 6.2 6.3 6.4 を一連の流れで演習します　(書籍の節の構成と異なっています)
 
 事前に書籍の６章を通読しておいてください。
 
@@ -21,11 +21,8 @@
     3.1. P2PK のoutput を持つトランザクションの作成はバイナリ形式で作成する必要があります
 
 3. 5個のタイプの異なるUTXOをinputとするトランザクションを作成
-    4.1. P2SH, P2WSH のUTXOを消費するためにはスクリプトの処理が必要です
-
-4. トランザクションへの署名
-    5. 1 マルチシグのP2SH , P2WSH では複数のデジタル署名が必要です
-5. ブロードキャスト
+    3.1 P2SH, P2WSH のUTXOをワレットに認識させる必要があります。
+4. トランザクションへの署名してブロードキャスト
 
 ![](./Chapter06-fig1.png)
 
@@ -1337,6 +1334,102 @@ TXID
 
 ## 6.5 ビットコインスクリプトの応用例
 
+### 6.5.1 トランザクションのタイムロック
+
+nLockTime が　500,000,000 未満の場合は，ブロック高の指定
+
+現在のブロック高の確認
+
+```
+bitcoin-core.cli getblockcount
+
+47078
+```
+
+UTXOの確認
+
+```
+bitcoin-core.cli listunspent
+[
+  {
+    "txid": "1c0b7a6d31c2c0d0a7b3f1acebef9480d05ea900c38e7dc802f61520f0ea047e",
+    "vout": 0,
+    "address": "tb1q5zu6q5z3lvrfgld6f9n6md44dmy4ztvkjuws2c",
+    "label": "",
+    "scriptPubKey": "0014a0b9a05051fb06947dba4967adb6b56ec9512d96",
+    "amount": 0.09500000,
+    "confirmations": 7,
+    "spendable": true,
+    "solvable": true,
+    "desc": "wpkh([60d80dee/0'/0'/36']022af8de82f548c1e531ec331648969315cedc4715fd97542bf177a6df8de4dfeb)#w5u092f4",
+    "safe": true
+  }
+]
+```
+
+#### createrawtransaction のパラメータの詳細
+
+```
+createrawtransaction [{"txid":"hex","vout":n,"sequence":n},...] [{"address":amount},{"data":"hex"},...] ( locktime replaceable )
+```
+
+#### ロックタイムを含むトランザクションの作成
+
+```
+bitcoin-core.cli createrawtransaction '[ { "txid": "1c0b7a6d31c2c0d0a7b3f1acebef9480d05ea900c38e7dc802f61520f0ea047e", "vout": 0 } ]' '[{ "tb1qj29lwmk6ezs4n7r79lzcp6jrdkf5x9g8e2pzf9": 0.093}]' 47085
+
+02000000017e04eaf02015f602c87d8ec300a95ed08094efebacf1b3a7d0c0c2316d7a0b1c0000000000feffffff0120e88d0000000000160014928bf76edac8a159f87e2fc580ea436d93431507edb70000
+```
+
+トランザクションの構造の確認
+
+* locktime  ブロック高を指定いている
+* sequence　0xffffffff 未満の数になっている　0xffffffff-1 (=4294967294) 
+
+
+```json
+bitcoin-core.cli decoderawtransaction 02000000017e04eaf02015f602c87d8ec300a95ed08094efebacf1b3a7d0c0c2316d7a0b1c0000000000feffffff0120e88d0000000000160014928bf76edac8a159f87e2fc580ea436d93431507edb70000
+
+{
+  "txid": "47c62922218384dd04287965940f59cf565547cb5cacfee3d56c36ce29dcad27",
+  "hash": "47c62922218384dd04287965940f59cf565547cb5cacfee3d56c36ce29dcad27",
+  "version": 2,
+  "size": 82,
+  "vsize": 82,
+  "weight": 328,
+  "locktime": 47085,
+  "vin": [
+    {
+      "txid": "1c0b7a6d31c2c0d0a7b3f1acebef9480d05ea900c38e7dc802f61520f0ea047e",
+      "vout": 0,
+      "scriptSig": {
+        "asm": "",
+        "hex": ""
+      },
+      "sequence": 4294967294
+    }
+  ],
+  "vout": [
+    {
+      "value": 0.09300000,
+      "n": 0,
+      "scriptPubKey": {
+        "asm": "0 928bf76edac8a159f87e2fc580ea436d93431507",
+        "hex": "0014928bf76edac8a159f87e2fc580ea436d93431507",
+        "reqSigs": 1,
+        "type": "witness_v0_keyhash",
+        "addresses": [
+          "tb1qj29lwmk6ezs4n7r79lzcp6jrdkf5x9g8e2pzf9"
+        ]
+      }
+    }
+  ]
+}
+```
+
+### UTXOのタイムロック（OP_CLTVとOP_CSV）
+
+
 
 
 
@@ -1375,3 +1468,84 @@ TXID
 
 ### 回答例
 
+---
+## 付録
+
+### データ付きトランザクションの作成（OP_RETURN）
+
+オペコード OP_RETURN を持つ金額 0 のoutput によってトランザクションに80バイトまでのデータを埋め込むことができます。
+
+dataとして "https://github.com/blockchain-programming/book2021/blob/master/Chapter06.md" という　75 バイトの文字列をトランザクションに埋め込んでみます
+
+Rubyで文字列を16進数に変換します
+
+```ruby
+text="https://github.com/blockchain-programming/book2021/blob/master/Chapter06.md"
+hex=text.unpack("H*")[0]
+
+=>"68747470733a2f2f6769746875622e636f6d2f626c6f636b636861696e2d70726f6772616d6d696e672f626f6f6b323032312f626c6f622f6d61737465722f4368617074657230362e6d64"
+
+# 逆変換
+[hex].pack('H*')
+
+=>"https://github.com/blockchain-programming/book2021/blob/master/Chapter06.md"
+```
+
+OP_RETURN を持つトランザクションの作成
+
+```
+bitcoin-core.cli createrawtransaction '[ { "txid": "1c0b7a6d31c2c0d0a7b3f1acebef9480d05ea900c38e7dc802f61520f0ea047e", "vout": 0 } ]' '[{"data":"68747470733a2f2f6769746875622e636f6d2f626c6f636b636861696e2d70726f6772616d6d696e672f626f6f6b323032312f626c6f622f6d61737465722f4368617074657230362e6d64"},{"tb1qj29lwmk6ezs4n7r79lzcp6jrdkf5x9g8e2pzf9": 0.093}]'
+
+02000000017e04eaf02015f602c87d8ec300a95ed08094efebacf1b3a7d0c0c2316d7a0b1c0000000000ffffffff0200000000000000004d6a4b68747470733a2f2f6769746875622e636f6d2f626c6f636b636861696e2d70726f6772616d6d696e672f626f6f6b323032312f626c6f622f6d61737465722f4368617074657230362e6d6420e88d0000000000160014928bf76edac8a159f87e2fc580ea436d9343150700000000
+```
+
+トランザクションの構造の確認
+
+```json
+bitcoin-core.cli decoderawtransaction 02000000017e04eaf02015f602c87d8ec300a95ed08094efebacf1b3a7d0c0c2316d7a0b1c0000000000ffffffff0200000000000000004d6a4b68747470733a2f2f6769746875622e636f6d2f626c6f636b636861696e2d70726f6772616d6d696e672f626f6f6b323032312f626c6f622f6d61737465722f4368617074657230362e6d6420e88d0000000000160014928bf76edac8a159f87e2fc580ea436d9343150700000000
+
+{
+  "txid": "d7708efbba353e9071824f2ad3237d14e14dedb7667861b1384989f0fa6b33f2",
+  "hash": "d7708efbba353e9071824f2ad3237d14e14dedb7667861b1384989f0fa6b33f2",
+  "version": 2,
+  "size": 168,
+  "vsize": 168,
+  "weight": 672,
+  "locktime": 0,
+  "vin": [
+    {
+      "txid": "1c0b7a6d31c2c0d0a7b3f1acebef9480d05ea900c38e7dc802f61520f0ea047e",
+      "vout": 0,
+      "scriptSig": {
+        "asm": "",
+        "hex": ""
+      },
+      "sequence": 4294967295
+    }
+  ],
+  "vout": [
+    {
+      "value": 0.00000000,
+      "n": 0,
+      "scriptPubKey": {
+        "asm": "OP_RETURN 68747470733a2f2f6769746875622e636f6d2f626c6f636b636861696e2d70726f6772616d6d696e672f626f6f6b323032312f626c6f622f6d61737465722f4368617074657230362e6d64",
+        "hex": "6a4b68747470733a2f2f6769746875622e636f6d2f626c6f636b636861696e2d70726f6772616d6d696e672f626f6f6b323032312f626c6f622f6d61737465722f4368617074657230362e6d64",
+        "type": "nulldata"
+      }
+    },
+    {
+      "value": 0.09300000,
+      "n": 1,
+      "scriptPubKey": {
+        "asm": "0 928bf76edac8a159f87e2fc580ea436d93431507",
+        "hex": "0014928bf76edac8a159f87e2fc580ea436d93431507",
+        "reqSigs": 1,
+        "type": "witness_v0_keyhash",
+        "addresses": [
+          "tb1qj29lwmk6ezs4n7r79lzcp6jrdkf5x9g8e2pzf9"
+        ]
+      }
+    }
+  ]
+}
+```
