@@ -8,7 +8,7 @@
 * [BIP](https://github.com/bitcoin/bips)
 
 
-## 6.2 6.3 6.4 を一連の流れで演習します　(書籍の節の構成と異なっています)
+## 6.2 6.3 6.4 6.5 を一連の流れで演習します　(書籍の節の構成と異なっています)
 
 事前に書籍の６章を通読しておいてください。
 
@@ -18,8 +18,14 @@
 1. faucetから得たUTXOをinputとして5個のoutputを持つトランザクションを作成し，署名して，ブロードキャストする
 
 2. 5個のUTXOからそれぞれP2PK, P2PKH, P2SH, P2WPKH, P2WSH の５つのタイプのoutputを持つ5個のトランザクションを作成し，それぞれ署名して，ブロードキャストする
+    3.1. P2PK のoutput を持つトランザクションの作成はバイナリ形式で作成する必要があります
 
-3. 5個のタイプの異なるUTXOをinputとするトランザクションを作成し，署名して，ブロードキャストする
+3. 5個のタイプの異なるUTXOをinputとするトランザクションを作成
+    4.1. P2SH, P2WSH のUTXOを消費するためにはスクリプトの処理が必要です
+
+4. トランザクションへの署名
+    5. 1 マルチシグのP2SH , P2WSH では複数のデジタル署名が必要です
+5. ブロードキャスト
 
 ![](./Chapter06-fig1.png)
 
@@ -322,9 +328,11 @@ createmultisig <必要署名数> '[<公開鍵1>,<公開鍵2>,...,<公開鍵m>]' 
 
 * legacy
 * bech32
-* p2sh-segwit (後方互換のため，bech32アドレスをP2SHでラップしたアドレス)
+* p2sh-segwit (SegWit導入時の後方互換性維持のため，bech32アドレスをP2SHでラップしたアドレス)
 
 #### アドレスごとの公開鍵の確認
+
+マルチシグアドレスの生成には公開鍵が必要です。
 
 ```
 getaddressinfo <ビットコインアドレス>
@@ -348,7 +356,24 @@ getaddressinfo <ビットコインアドレス>
 
 #### P2SH 用マルチシグアドレス
 
-legacy
+```
+createmultisig <必要署名数> '[<公開鍵>, ..., <公開鍵>]' <アドレスタイプ>
+```
+結果
+```
+{                            (json object)
+  "address" : "str",         (string) The value of the new multisig address.
+  "redeemScript" : "hex",    (string) The string value of the hex-encoded redemption script.
+  "descriptor" : "str"       (string) The descriptor for this multisig
+}
+```
+
+legacy(公開鍵の順序が変わるとアドレスなども変わることに注意！)
+
+1. "0396526c8055983750fc167752326c6c270d294da8f6b44444f1464d8454b9b50d"
+2. "0339dad2edb3c68888b332cf0e0e8159cfdf9acbefe8923082aaaf65ddc2f79f41"
+3. "024176a0784341d13a76ba8ad8a9249b1156b70216b4ebe2295eeafc0c0a3caf4d"
+
 
 ```json
 bitcoin-core.cli createmultisig 2 '["0396526c8055983750fc167752326c6c270d294da8f6b44444f1464d8454b9b50d","0339dad2edb3c68888b332cf0e0e8159cfdf9acbefe8923082aaaf65ddc2f79f41","024176a0784341d13a76ba8ad8a9249b1156b70216b4ebe2295eeafc0c0a3caf4d"]' legacy
@@ -361,13 +386,31 @@ bitcoin-core.cli createmultisig 2 '["0396526c8055983750fc167752326c6c270d294da8f
 }
 ```
 
-P2SH アドレス
+* P2SH アドレス
 
-* 2NFDXwLJm87sDmfosTivDkMUbw2Q8Ze8ktF
+```
+2NFDXwLJm87sDmfosTivDkMUbw2Q8Ze8ktF
+```
+
+* redeemScript
+
+```
+52210396526c8055983750fc167752326c6c270d294da8f6b44444f1464d8454b9b50d210339dad2edb3c68888b332cf0e0e8159cfdf9acbefe8923082aaaf65ddc2f79f4121024176a0784341d13a76ba8ad8a9249b1156b70216b4ebe2295eeafc0c0a3caf4d53ae
+```
+
+* descriptor
+
+```
+"sh(multi(2,0396526c8055983750fc167752326c6c270d294da8f6b44444f1464d8454b9b50d,0339dad2edb3c68888b332cf0e0e8159cfdf9acbefe8923082aaaf65ddc2f79f41,024176a0784341d13a76ba8ad8a9249b1156b70216b4ebe2295eeafc0c0a3caf4d))#qsun2edu"
+```
 
 #### P2WSH用マルチシグアドレス
 
 Bech32
+
+1. "0346711e7845d77b5dba283743228f5c6162e626445ae694fbd9962c6013775958"
+2. "03d798a0fc210729dab75473393296ed1c9ed8ec4ed85f97bb3273c9cb7b814476"
+3. "03e0e27add506965861763916b8daa3744d6136b2e4b6a1aeb9c4274deeb48e595"
 
 ```json
 bitcoin-core.cli createmultisig 2 '["0346711e7845d77b5dba283743228f5c6162e626445ae694fbd9962c6013775958","03d798a0fc210729dab75473393296ed1c9ed8ec4ed85f97bb3273c9cb7b814476","03e0e27add506965861763916b8daa3744d6136b2e4b6a1aeb9c4274deeb48e595"]' bech32
@@ -380,9 +423,23 @@ bitcoin-core.cli createmultisig 2 '["0346711e7845d77b5dba283743228f5c6162e626445
 }
 ```
 
-P2WSHアドレス
+* P2WSHアドレス
 
-* tb1q8ngpnf4g4z95xfdv72m7hatc8yafna8dqcprd5psc7ue4sc7uzrs4avaje
+```
+tb1q8ngpnf4g4z95xfdv72m7hatc8yafna8dqcprd5psc7ue4sc7uzrs4avaje
+```
+
+* redeemScript
+
+```
+52210346711e7845d77b5dba283743228f5c6162e626445ae694fbd9962c60137759582103d798a0fc210729dab75473393296ed1c9ed8ec4ed85f97bb3273c9cb7b8144762103e0e27add506965861763916b8daa3744d6136b2e4b6a1aeb9c4274deeb48e59553ae
+```
+
+* descriptor
+
+```
+"wsh(multi(2,0346711e7845d77b5dba283743228f5c6162e626445ae694fbd9962c6013775958,03d798a0fc210729dab75473393296ed1c9ed8ec4ed85f97bb3273c9cb7b814476,03e0e27add506965861763916b8daa3744d6136b2e4b6a1aeb9c4274deeb48e595))#p2l5aa90"
+```
 
 ## 6.4 トランザクションのタイプと検証スクリプト
 
@@ -491,6 +548,11 @@ bitcoin-core.cli decoderawtransaction 0200000000010183472c297bdbe8e36106657a6130
 
 * 2NFDXwLJm87sDmfosTivDkMUbw2Q8Ze8ktF
 
+* redeemScript
+
+```
+52210396526c8055983750fc167752326c6c270d294da8f6b44444f1464d8454b9b50d210339dad2edb3c68888b332cf0e0e8159cfdf9acbefe8923082aaaf65ddc2f79f4121024176a0784341d13a76ba8ad8a9249b1156b70216b4ebe2295eeafc0c0a3caf4d53ae
+```
 
 input(UTXO)　のJSON形式の例
 
@@ -664,6 +726,12 @@ bitcoin-core.cli decoderawtransaction 0200000000010183472c297bdbe8e36106657a6130
 送金先アドレスを　6.3 で生成したP2WSH アドレスにすればよい
 
 * tb1q8ngpnf4g4z95xfdv72m7hatc8yafna8dqcprd5psc7ue4sc7uzrs4avaje
+
+* redeemScript
+
+```
+52210346711e7845d77b5dba283743228f5c6162e626445ae694fbd9962c60137759582103d798a0fc210729dab75473393296ed1c9ed8ec4ed85f97bb3273c9cb7b8144762103e0e27add506965861763916b8daa3744d6136b2e4b6a1aeb9c4274deeb48e59553ae
+```
 
 
 input(UTXO)　のJSON形式の例
@@ -975,18 +1043,297 @@ TXID
 
 ビットコインネットワークで確認され，ブロックに格納されるまで10分以上待ってください。
 
-### 6.4.8 5種類のUTXOを消費するトランザクションの作成とブロードキャスト
+### 6.4.8 5種類のUTXOを消費するトランザクションの作成
 
+#### UTXOの確認
 
+この時点で　bitcoin core のワレット機能でUTXOとして確認可能なものは　P2PK, P2PKH, P2WPKH のoutputだけです。
 
+P2SHとP2WSHのUTXOは，ワレットには認識されません。
 
+```
+bitcoin-core.cli listunspent
+[
+  {
+    "txid": "dd8173e708bed98cf6a66bc41bdada065e62d7eb57300115a60a42e35914b984",
+    "vout": 0,
+    "address": "tb1qz3uh04vpttfupqrh3msn4jkf694wmy7cfrtzrn",
+    "label": "",
+    "scriptPubKey": "0014147977d5815ad3c080778ee13acac9d16aed93d8",
+    "amount": 0.01980000,
+    "confirmations": 208,
+    "spendable": true,
+    "solvable": true,
+    "desc": "wpkh([60d80dee/0'/0'/34']0307de5755de6328a3d68a60a342128326d996271b251c7ab11cedcaf972a1f36c)#njlw3azr",
+    "safe": true
+  },
+  {
+    "txid": "01a4d2228d6264d9bbc5761b39671cc83e93ccce5141470f193829ae8cdd888a",
+    "vout": 0,
+    "address": "msLvK34H6sL36oD32Vy58KX4myf7e7gnjG",
+    "label": "alice",
+    "scriptPubKey": "76a91481bbb1c4c0db9739ca2daf11e32470e6a052cdaa88ac",
+    "amount": 0.01980000,
+    "confirmations": 208,
+    "spendable": true,
+    "solvable": true,
+    "desc": "pkh([60d80dee/0'/0'/31']0253eaa94d1261b7ab426259881e8ba9019b859f5bf492f609801732e2e7edb243)#kah4tj5s",
+    "safe": true
+  },
+  {
+    "txid": "01c041f15baaf8e75d09d24335be445fae39d322688788be1556f5436fe3dbbb",
+    "vout": 0,
+    "address": "mgX9TGp5SxT6jczaKhf6fVDUdfsg1m45wf",
+    "scriptPubKey": "21027544b898d2d886a7ee733f2cf3da01bfd5d2350fedf602f4d1b78412b5f4d851ac",
+    "amount": 0.01780000,
+    "confirmations": 208,
+    "spendable": true,
+    "solvable": true,
+    "desc": "pk([60d80dee/0'/0'/35']027544b898d2d886a7ee733f2cf3da01bfd5d2350fedf602f4d1b78412b5f4d851)#24lz4ah2",
+    "safe": true
+  }
+]
 
+```
 
+#### P2SH マルチシグ情報の再確認
 
+P2SHマルチシグアドレスを生成したときのcreatemultisig の結果の再確認
 
+```
+{
+  "address": "2NFDXwLJm87sDmfosTivDkMUbw2Q8Ze8ktF",
+  "redeemScript": "52210396526c8055983750fc167752326c6c270d294da8f6b44444f1464d8454b9b50d210339dad2edb3c68888b332cf0e0e8159cfdf9acbefe8923082aaaf65ddc2f79f4121024176a0784341d13a76ba8ad8a9249b1156b70216b4ebe2295eeafc0c0a3caf4d53ae",
+  "descriptor": "sh(multi(2,0396526c8055983750fc167752326c6c270d294da8f6b44444f1464d8454b9b50d,0339dad2edb3c68888b332cf0e0e8159cfdf9acbefe8923082aaaf65ddc2f79f41,024176a0784341d13a76ba8ad8a9249b1156b70216b4ebe2295eeafc0c0a3caf4d))#qsun2edu"
+}
+```
 
+#### P2WSH のマルチシグ情報の再確認
 
+P2WSHのマルチシグアドレスを生成したときのcreatemultisig の結果の再確認
 
+```
+{
+  "address": "tb1q8ngpnf4g4z95xfdv72m7hatc8yafna8dqcprd5psc7ue4sc7uzrs4avaje",
+  "redeemScript": "52210346711e7845d77b5dba283743228f5c6162e626445ae694fbd9962c60137759582103d798a0fc210729dab75473393296ed1c9ed8ec4ed85f97bb3273c9cb7b8144762103e0e27add506965861763916b8daa3744d6136b2e4b6a1aeb9c4274deeb48e59553ae",
+  "descriptor": "wsh(multi(2,0346711e7845d77b5dba283743228f5c6162e626445ae694fbd9962c6013775958,03d798a0fc210729dab75473393296ed1c9ed8ec4ed85f97bb3273c9cb7b814476,03e0e27add506965861763916b8daa3744d6136b2e4b6a1aeb9c4274deeb48e595))#p2l5aa90"
+}
+
+```
+
+#### bitcoin core のワレットにマルチシグ情報を登録する
+
+一般的には，マルチシグは複数の主体のワレットで署名しなければなりません。
+この例では，単純化のために署名に必要なすべての秘密鍵が一つのワレットに入っています。
+
+```
+importmulti <JSON形式のインポート情報(descriptorを利用)> 
+```
+
+```
+ bitcoin-core.cli importmulti '[{"desc": "sh(multi(2,0396526c8055983750fc167752326c6c270d294da8f6b44444f1464d8454b9b50d,0339dad2edb3c68888b332cf0e0e8159cfdf9acbefe8923082aaaf65ddc2f79f41,024176a0784341d13a76ba8ad8a9249b1156b70216b4ebe2295eeafc0c0a3caf4d))#qsun2edu", "timestamp": "now", "watchonly": true}]'
+ 
+ [
+  {
+    "success": true
+  }
+]
+```
+
+```
+bitcoin-core.cli importmulti '[{"desc": "wsh(multi(2,0346711e7845d77b5dba283743228f5c6162e626445ae694fbd9962c6013775958,03d798a0fc210729dab75473393296ed1c9ed8ec4ed85f97bb3273c9cb7b814476,03e0e27add506965861763916b8daa3744d6136b2e4b6a1aeb9c4274deeb48e595))#p2l5aa90","timestamp": "now", "watchonly": true}]'
+
+[
+  {
+    "success": true
+  }
+]
+```
+
+#### これでワレットがP2SH, P2WSH を含めたすべてのUTXOを確認できるようになる
+
+```json
+bitcoin-core.cli listunspent
+
+[
+  {
+    "txid": "dd8173e708bed98cf6a66bc41bdada065e62d7eb57300115a60a42e35914b984",
+    "vout": 0,
+    "address": "tb1qz3uh04vpttfupqrh3msn4jkf694wmy7cfrtzrn",
+    "label": "",
+    "scriptPubKey": "0014147977d5815ad3c080778ee13acac9d16aed93d8",
+    "amount": 0.01980000,
+    "confirmations": 476,
+    "spendable": true,
+    "solvable": true,
+    "desc": "wpkh([60d80dee/0'/0'/34']0307de5755de6328a3d68a60a342128326d996271b251c7ab11cedcaf972a1f36c)#njlw3azr",
+    "safe": true
+  },
+  {
+    "txid": "01a4d2228d6264d9bbc5761b39671cc83e93ccce5141470f193829ae8cdd888a",
+    "vout": 0,
+    "address": "msLvK34H6sL36oD32Vy58KX4myf7e7gnjG",
+    "label": "alice",
+    "scriptPubKey": "76a91481bbb1c4c0db9739ca2daf11e32470e6a052cdaa88ac",
+    "amount": 0.01980000,
+    "confirmations": 476,
+    "spendable": true,
+    "solvable": true,
+    "desc": "pkh([60d80dee/0'/0'/31']0253eaa94d1261b7ab426259881e8ba9019b859f5bf492f609801732e2e7edb243)#kah4tj5s",
+    "safe": true
+  },
+  {
+    "txid": "95ccd50a75ab3bb3767df0b7669f3472965f8d1598feab7cb424f1862857ca8f",
+    "vout": 0,
+    "address": "tb1q8ngpnf4g4z95xfdv72m7hatc8yafna8dqcprd5psc7ue4sc7uzrs4avaje",
+    "label": "",
+    "witnessScript": "52210346711e7845d77b5dba283743228f5c6162e626445ae694fbd9962c60137759582103d798a0fc210729dab75473393296ed1c9ed8ec4ed85f97bb3273c9cb7b8144762103e0e27add506965861763916b8daa3744d6136b2e4b6a1aeb9c4274deeb48e59553ae",
+    "scriptPubKey": "00203cd019a6a8a88b4325acf2b7ebf578393a99f4ed060236d030c7b99ac31ee087",
+    "amount": 0.01980000,
+    "confirmations": 476,
+    "spendable": false,
+    "solvable": true,
+    "desc": "wsh(multi(2,[036ce8f5]0346711e7845d77b5dba283743228f5c6162e626445ae694fbd9962c6013775958,[1ac1df2e]03d798a0fc210729dab75473393296ed1c9ed8ec4ed85f97bb3273c9cb7b814476,[3f0ddcf2]03e0e27add506965861763916b8daa3744d6136b2e4b6a1aeb9c4274deeb48e595))#7c5ke0ec",
+    "safe": true
+  },
+  {
+    "txid": "01c041f15baaf8e75d09d24335be445fae39d322688788be1556f5436fe3dbbb",
+    "vout": 0,
+    "address": "mgX9TGp5SxT6jczaKhf6fVDUdfsg1m45wf",
+    "scriptPubKey": "21027544b898d2d886a7ee733f2cf3da01bfd5d2350fedf602f4d1b78412b5f4d851ac",
+    "amount": 0.01780000,
+    "confirmations": 476,
+    "spendable": true,
+    "solvable": true,
+    "desc": "pk([60d80dee/0'/0'/35']027544b898d2d886a7ee733f2cf3da01bfd5d2350fedf602f4d1b78412b5f4d851)#24lz4ah2",
+    "safe": true
+  },
+  {
+    "txid": "fbe48c9501b3cd40e2799df464bea9d8f3f3c6bed36a71499636105af11508e9",
+    "vout": 0,
+    "address": "2NFDXwLJm87sDmfosTivDkMUbw2Q8Ze8ktF",
+    "label": "",
+    "redeemScript": "52210396526c8055983750fc167752326c6c270d294da8f6b44444f1464d8454b9b50d210339dad2edb3c68888b332cf0e0e8159cfdf9acbefe8923082aaaf65ddc2f79f4121024176a0784341d13a76ba8ad8a9249b1156b70216b4ebe2295eeafc0c0a3caf4d53ae",
+    "scriptPubKey": "a914f100eb22e91b65c5c24e3cb31fc6e571e57e107187",
+    "amount": 0.01980000,
+    "confirmations": 476,
+    "spendable": true,
+    "solvable": true,
+    "desc": "sh(multi(2,[b4817cdb]0396526c8055983750fc167752326c6c270d294da8f6b44444f1464d8454b9b50d,[43cf1e78]0339dad2edb3c68888b332cf0e0e8159cfdf9acbefe8923082aaaf65ddc2f79f41,[b551d36b]024176a0784341d13a76ba8ad8a9249b1156b70216b4ebe2295eeafc0c0a3caf4d))#7lc6rvfl",
+    "safe": true
+  }
+]
+
+```
+
+#### ５つのinputを持つ未署名のトランザクションの作成
+
+```bash
+bitcoin-core.cli createrawtransaction  '[{"txid":"dd8173e708bed98cf6a66bc41bdada065e62d7eb57300115a60a42e35914b984","vout":0},{"txid":"01a4d2228d6264d9bbc5761b39671cc83e93ccce5141470f193829ae8cdd888a","vout":0},{"txid":"95ccd50a75ab3bb3767df0b7669f3472965f8d1598feab7cb424f1862857ca8f","vout":0},{"txid":"01c041f15baaf8e75d09d24335be445fae39d322688788be1556f5436fe3dbbb","vout":0},{"txid":"fbe48c9501b3cd40e2799df464bea9d8f3f3c6bed36a71499636105af11508e9","vout":0}]'  '[{"tb1q5zu6q5z3lvrfgld6f9n6md44dmy4ztvkjuws2c":0.095}]'
+
+020000000584b91459e3420aa615013057ebd7625e06dada1bc46ba6f68cd9be08e77381dd0000000000ffffffff8a88dd8cae2938190f474151cecc933ec81c67391b76c5bbd964628d22d2a4010000000000ffffffff8fca572886f124b47cabfe98158d5f9672349f66b7f07d76b33bab750ad5cc950000000000ffffffffbbdbe36f43f55615be88876822d339ae5f44be3543d2095de7f8aa5bf141c0010000000000ffffffffe90815f15a10369649716ad3bec6f3f3d8a9be64f49d79e240cdb301958ce4fb0000000000ffffffff0160f5900000000000160014a0b9a05051fb06947dba4967adb6b56ec9512d9600000000
+```
+
+```json
+bitcoin-core.cli decoderawtransaction 020000000584b91459e3420aa615013057ebd7625e06dada1bc46ba6f68cd9be08e77381dd0000000000ffffffff8a88dd8cae2938190f474151cecc933ec81c67391b76c5bbd964628d22d2a4010000000000ffffffff8fca572886f124b47cabfe98158d5f9672349f66b7f07d76b33bab750ad5cc950000000000ffffffffbbdbe36f43f55615be88876822d339ae5f44be3543d2095de7f8aa5bf141c0010000000000ffffffffe90815f15a10369649716ad3bec6f3f3d8a9be64f49d79e240cdb301958ce4fb0000000000ffffffff0160f5900000000000160014a0b9a05051fb06947dba4967adb6b56ec9512d9600000000
+{
+  "txid": "e4fd7b14731136033e9cf6ec5ef5b112eb81c3ecb9b8a41c2902067edd804ada",
+  "hash": "e4fd7b14731136033e9cf6ec5ef5b112eb81c3ecb9b8a41c2902067edd804ada",
+  "version": 2,
+  "size": 246,
+  "vsize": 246,
+  "weight": 984,
+  "locktime": 0,
+  "vin": [
+    {
+      "txid": "dd8173e708bed98cf6a66bc41bdada065e62d7eb57300115a60a42e35914b984",
+      "vout": 0,
+      "scriptSig": {
+        "asm": "",
+        "hex": ""
+      },
+      "sequence": 4294967295
+    },
+    {
+      "txid": "01a4d2228d6264d9bbc5761b39671cc83e93ccce5141470f193829ae8cdd888a",
+      "vout": 0,
+      "scriptSig": {
+        "asm": "",
+        "hex": ""
+      },
+      "sequence": 4294967295
+    },
+    {
+      "txid": "95ccd50a75ab3bb3767df0b7669f3472965f8d1598feab7cb424f1862857ca8f",
+      "vout": 0,
+      "scriptSig": {
+        "asm": "",
+        "hex": ""
+      },
+      "sequence": 4294967295
+    },
+    {
+      "txid": "01c041f15baaf8e75d09d24335be445fae39d322688788be1556f5436fe3dbbb",
+      "vout": 0,
+      "scriptSig": {
+        "asm": "",
+        "hex": ""
+      },
+      "sequence": 4294967295
+    },
+    {
+      "txid": "fbe48c9501b3cd40e2799df464bea9d8f3f3c6bed36a71499636105af11508e9",
+      "vout": 0,
+      "scriptSig": {
+        "asm": "",
+        "hex": ""
+      },
+      "sequence": 4294967295
+    }
+  ],
+  "vout": [
+    {
+      "value": 0.09500000,
+      "n": 0,
+      "scriptPubKey": {
+        "asm": "0 a0b9a05051fb06947dba4967adb6b56ec9512d96",
+        "hex": "0014a0b9a05051fb06947dba4967adb6b56ec9512d96",
+        "reqSigs": 1,
+        "type": "witness_v0_keyhash",
+        "addresses": [
+          "tb1q5zu6q5z3lvrfgld6f9n6md44dmy4ztvkjuws2c"
+        ]
+      }
+    }
+  ]
+}
+```
+
+#### トランザクションへの署名
+
+一般的には，マルチシグは複数の主体のワレットで順番に署名する必要があります。
+
+```
+bitcoin-core.cli signrawtransactionwithwallet 020000000584b91459e3420aa615013057ebd7625e06dada1bc46ba6f68cd9be08e77381dd0000000000ffffffff8a88dd8cae2938190f474151cecc933ec81c67391b76c5bbd964628d22d2a4010000000000ffffffff8fca572886f124b47cabfe98158d5f9672349f66b7f07d76b33bab750ad5cc950000000000ffffffffbbdbe36f43f55615be88876822d339ae5f44be3543d2095de7f8aa5bf141c0010000000000ffffffffe90815f15a10369649716ad3bec6f3f3d8a9be64f49d79e240cdb301958ce4fb0000000000ffffffff0160f5900000000000160014a0b9a05051fb06947dba4967adb6b56ec9512d9600000000
+
+{
+  "hex": "0200000000010584b91459e3420aa615013057ebd7625e06dada1bc46ba6f68cd9be08e77381dd0000000000ffffffff8a88dd8cae2938190f474151cecc933ec81c67391b76c5bbd964628d22d2a401000000006a473044022027c2e79361e954a6ff5aafe93d76f174cd7ca153c48b4f0d88c641b79817cd95022065a8ef548642a7c98cce141b5c095604eacf5a817d4c3d45873bd146193353aa01210253eaa94d1261b7ab426259881e8ba9019b859f5bf492f609801732e2e7edb243ffffffff8fca572886f124b47cabfe98158d5f9672349f66b7f07d76b33bab750ad5cc950000000000ffffffffbbdbe36f43f55615be88876822d339ae5f44be3543d2095de7f8aa5bf141c0010000000048473044022050fbd4201330b175b94389c1bf7802d48b8a969d8a3d7db8d85990de6c82a786022049947023c516db6f09e8098c751e9818b322c49a0b4aed1338d15a3506b3557301ffffffffe90815f15a10369649716ad3bec6f3f3d8a9be64f49d79e240cdb301958ce4fb00000000fb0047304402205985088fe2ff54e3a54a9ec503d933b127b27cd2f22d83e2f7383b5c9c33151c022061d4ec3d7675503f3bf6ddf785fb5ed498652bd6be270110e1c8afe1d6e21f470146304302200da53981318fb4b2cc457366fa0ec85b4d3e68595a20268ca690fd4639754490021f7c0c2e9c07cddea7fc329cb6b0a7044067882b9e4a168d811af647b15cb4f5014c6952210396526c8055983750fc167752326c6c270d294da8f6b44444f1464d8454b9b50d210339dad2edb3c68888b332cf0e0e8159cfdf9acbefe8923082aaaf65ddc2f79f4121024176a0784341d13a76ba8ad8a9249b1156b70216b4ebe2295eeafc0c0a3caf4d53aeffffffff0160f5900000000000160014a0b9a05051fb06947dba4967adb6b56ec9512d960247304402201ef77486d8df3a00b209aa8bb7000a9a3254ec936add465d30cddde1e1f886d402207b02301d5b536c7c3cb480864d056d80fe1794f526c32dbdb7c5644c15aa731001210307de5755de6328a3d68a60a342128326d996271b251c7ab11cedcaf972a1f36c00040047304402203d17620f462302ffae15f47f7955140627720c6f4f87d5471ef19a7b06ad9d27022059169ed14b048b67246dad8a8e6ed139cdd9bf08e3fe50b1f3f0fd632988036701473044022042c067ead3eacd7e64693d07a94f95e830c5df448fca89e96bf89114d1ebf48302203ebaee44d1d2ea93b7cdffe2d8008e98caf471926d03fa9a270111e17190a5a6016952210346711e7845d77b5dba283743228f5c6162e626445ae694fbd9962c60137759582103d798a0fc210729dab75473393296ed1c9ed8ec4ed85f97bb3273c9cb7b8144762103e0e27add506965861763916b8daa3744d6136b2e4b6a1aeb9c4274deeb48e59553ae000000000000",
+  "complete": true
+}
+
+```
+
+#### 署名済のトランザクションのブロードキャスト
+
+```
+bitcoin-core.cli sendrawtransaction 0200000000010584b91459e3420aa615013057ebd7625e06dada1bc46ba6f68cd9be08e77381dd0000000000ffffffff8a88dd8cae2938190f474151cecc933ec81c67391b76c5bbd964628d22d2a401000000006a473044022027c2e79361e954a6ff5aafe93d76f174cd7ca153c48b4f0d88c641b79817cd95022065a8ef548642a7c98cce141b5c095604eacf5a817d4c3d45873bd146193353aa01210253eaa94d1261b7ab426259881e8ba9019b859f5bf492f609801732e2e7edb243ffffffff8fca572886f124b47cabfe98158d5f9672349f66b7f07d76b33bab750ad5cc950000000000ffffffffbbdbe36f43f55615be88876822d339ae5f44be3543d2095de7f8aa5bf141c0010000000048473044022050fbd4201330b175b94389c1bf7802d48b8a969d8a3d7db8d85990de6c82a786022049947023c516db6f09e8098c751e9818b322c49a0b4aed1338d15a3506b3557301ffffffffe90815f15a10369649716ad3bec6f3f3d8a9be64f49d79e240cdb301958ce4fb00000000fb0047304402205985088fe2ff54e3a54a9ec503d933b127b27cd2f22d83e2f7383b5c9c33151c022061d4ec3d7675503f3bf6ddf785fb5ed498652bd6be270110e1c8afe1d6e21f470146304302200da53981318fb4b2cc457366fa0ec85b4d3e68595a20268ca690fd4639754490021f7c0c2e9c07cddea7fc329cb6b0a7044067882b9e4a168d811af647b15cb4f5014c6952210396526c8055983750fc167752326c6c270d294da8f6b44444f1464d8454b9b50d210339dad2edb3c68888b332cf0e0e8159cfdf9acbefe8923082aaaf65ddc2f79f4121024176a0784341d13a76ba8ad8a9249b1156b70216b4ebe2295eeafc0c0a3caf4d53aeffffffff0160f5900000000000160014a0b9a05051fb06947dba4967adb6b56ec9512d960247304402201ef77486d8df3a00b209aa8bb7000a9a3254ec936add465d30cddde1e1f886d402207b02301d5b536c7c3cb480864d056d80fe1794f526c32dbdb7c5644c15aa731001210307de5755de6328a3d68a60a342128326d996271b251c7ab11cedcaf972a1f36c00040047304402203d17620f462302ffae15f47f7955140627720c6f4f87d5471ef19a7b06ad9d27022059169ed14b048b67246dad8a8e6ed139cdd9bf08e3fe50b1f3f0fd632988036701473044022042c067ead3eacd7e64693d07a94f95e830c5df448fca89e96bf89114d1ebf48302203ebaee44d1d2ea93b7cdffe2d8008e98caf471926d03fa9a270111e17190a5a6016952210346711e7845d77b5dba283743228f5c6162e626445ae694fbd9962c60137759582103d798a0fc210729dab75473393296ed1c9ed8ec4ed85f97bb3273c9cb7b8144762103e0e27add506965861763916b8daa3744d6136b2e4b6a1aeb9c4274deeb48e59553ae000000000000
+```
+
+TXID
+
+```
+1c0b7a6d31c2c0d0a7b3f1acebef9480d05ea900c38e7dc802f61520f0ea047e
+```
 
 ## 6.5 ビットコインスクリプトの応用例
 
@@ -1027,564 +1374,4 @@ TXID
 ## 3. 実際にアトミックスワップを行うトランザクションを作成し，アトミックスワップを実施してみてください。
 
 ### 回答例
-
-
----
-# 付録
-
-
-## トランザクションの例
-
- mainnetのトランザクションの例です。
-
-### トランザクションのタイプ (output) の例
-
-トランザクションのoutputに複数のタイプを含むものもあります
-
-*  P2PK
-    TXID: 330aac3434b86bbe99df6d9a93da13e687646b1d7d3a6945be2fa015ebe3b90c
-    TXID: 0fb1b6b0480b7b45f265e832b9afa8ec97959a82beb719ea7057ad9eaf5ce4fd
-    
-* P2PKH
-
-    TXID: f4515fed3dc4a19b90a317b9840c243bac26114cf637522373a7d486b372600b
-    TXID: e9a66845e05d5abc0ad04ec80f774a7e585c6e8db975962d069a522137b80c1d
-
-*  P2SH
-
-    TXID: 1ab250fa3fe855a3f75094d6c64711d2de4bb0275f49fcd10e9cfb2dd7ea5ef9
-    TXID: b5986fc13fcb5ba7ddb36457edb30fa3f5c0b2f873bc003167530b1b8bb49540
-
-*  P2WPKH
-
-    TXID: 9d9463c62424d13bb4e6a64397adeedf5a5a0db8b66243ba779f006a3f87e9e8
-
-*  P2WSH
-
-    TXID: 5f6b4c79fa22595b18267b9c41a1c4d884dbdd845fed5f0d434e603d32b9d90c
-
-### 確認方法
-
-```bash
-bitcoin-core.cli getrawtransaction <TXID> true
-```
-
-### P2PKトランザクションの例
-
-### output がP2PK
-
-初期の時代のコインベーストランザクションです
-
-```json
-TXID: 330aac3434b86bbe99df6d9a93da13e687646b1d7d3a6945be2fa015ebe3b90c
-      "vin": [
-        {
-          "coinbase": "0464ba0e1c010a",
-          "sequence": 4294967295
-        }
-      ],
-      "vout": [
-        {
-          "value": 50.00000000,
-          "n": 0,
-          "scriptPubKey": {
-            "asm": "04b3eac44b4caa3c2f91d7179ab40b1b896e6d6d6d99ebb59db30b7ed19fe84db69886cd18fdb490b87244d2764a5ecb58071fa891fb7f22bb92ed3eb6b6be4082 OP_CHECKSIG",
-            "hex": "4104b3eac44b4caa3c2f91d7179ab40b1b896e6d6d6d99ebb59db30b7ed19fe84db69886cd18fdb490b87244d2764a5ecb58071fa891fb7f22bb92ed3eb6b6be4082ac",
-            "type": "pubkey"
-          }
-        }
-      ],
-```
-
-#### input がP2PK
-
-```json
-TXID: 0fb1b6b0480b7b45f265e832b9afa8ec97959a82beb719ea7057ad9eaf5ce4fd
-   "vin": [
-    {
-...
-
-    {
-      "txid": "330aac3434b86bbe99df6d9a93da13e687646b1d7d3a6945be2fa015ebe3b90c",
-      "vout": 0,
-      "scriptSig": {
-        "asm": "3046022100d253be36e401150e912c6c3b4fcadeae46e845ca4adf0f30b1bb21ba5c2b098a0221008a679595140050c74c009fc4c1dc2b77ca08abc9c7f31848be12d543b9bc169a[ALL]",
-        "hex": "493046022100d253be36e401150e912c6c3b4fcadeae46e845ca4adf0f30b1bb21ba5c2b098a0221008a679595140050c74c009fc4c1dc2b77ca08abc9c7f31848be12d543b9bc169a01"
-      },
-      "sequence": 4294967295
-    }
-  ],
-  "vout": [
-    {
-      "value": 350.00000000,
-      "n": 0,
-      "scriptPubKey": {
-        "asm": "OP_DUP OP_HASH160 b8da78f3b1a02948d050fa6ffdfe5c960f6aa527 OP_EQUALVERIFY OP_CHECKSIG",
-        "hex": "76a914b8da78f3b1a02948d050fa6ffdfe5c960f6aa52788ac",
-        "reqSigs": 1,
-        "type": "pubkeyhash",
-        "addresses": [
-          "1HrR42k1JRLFvWJcmauqKuRG43ACg2pJRV"
-        ]
-      }
-    }
-  ],```
-
-### P2PKHトランザクションの例
-
-#### output がP2PKH
-
-```json
-TXID: f4515fed3dc4a19b90a317b9840c243bac26114cf637522373a7d486b372600b
-  "vin": [
-    {
-      "txid": "c691e521b77f7e59425d9f51b98c9897f2f40bb6165bc595156fb8e69ef3fce7",
-      "vout": 1,
-      "scriptSig": {
-        "asm": "3045022100ac572b43e78089851202cfd9386750b08afc175318c537f04eb364bf5a0070d402203f0e829d4baea982feaf987cb9f14c85097d2fbe89fba3f283f6925b3214a97e[ALL] 048922fa4dc891f9bb39f315635c03e60e019ff9ec1559c8b581324b4c3b7589a57550f9b0b80bc72d0f959fddf6ca65f07223c37a8499076bd7027ae5c325fac5",
-        "hex": "483045022100ac572b43e78089851202cfd9386750b08afc175318c537f04eb364bf5a0070d402203f0e829d4baea982feaf987cb9f14c85097d2fbe89fba3f283f6925b3214a97e0141048922fa4dc891f9bb39f315635c03e60e019ff9ec1559c8b581324b4c3b7589a57550f9b0b80bc72d0f959fddf6ca65f07223c37a8499076bd7027ae5c325fac5"
-      },
-      "sequence": 4294967295
-    }
-  ],
-  "vout": [
-    {
-      "value": 0.01000000,
-      "n": 0,
-      "scriptPubKey": {
-        "asm": "OP_DUP OP_HASH160 c4eb47ecfdcf609a1848ee79acc2fa49d3caad70 OP_EQUALVERIFY OP_CHECKSIG",
-        "hex": "76a914c4eb47ecfdcf609a1848ee79acc2fa49d3caad7088ac",
-        "reqSigs": 1,
-        "type": "pubkeyhash",
-        "addresses": [
-          "1JxDJCyWNakZ5kECKdCU9Zka6mh34mZ7B2"
-        ]
-      }
-    }
-  ],
-```
-
-#### input がP2PKH
-
-```json
-TXID: e9a66845e05d5abc0ad04ec80f774a7e585c6e8db975962d069a522137b80c1d
-  "vin": [
-    {
-      "txid": "f4515fed3dc4a19b90a317b9840c243bac26114cf637522373a7d486b372600b",
-      "vout": 0,
-      "scriptSig": {
-        "asm": "3046022100bb1ad26df930a51cce110cf44f7a48c3c561fd977500b1ae5d6b6fd13d0b3f4a022100c5b42951acedff14abba2736fd574bdb465f3e6f8da12e2c5303954aca7f78f3[ALL] 04a7135bfe824c97ecc01ec7d7e336185c81e2aa2c41ab175407c09484ce9694b44953fcb751206564a9c24dd094d42fdbfdd5aad3e063ce6af4cfaaea4ea14fbb",
-        "hex": "493046022100bb1ad26df930a51cce110cf44f7a48c3c561fd977500b1ae5d6b6fd13d0b3f4a022100c5b42951acedff14abba2736fd574bdb465f3e6f8da12e2c5303954aca7f78f3014104a7135bfe824c97ecc01ec7d7e336185c81e2aa2c41ab175407c09484ce9694b44953fcb751206564a9c24dd094d42fdbfdd5aad3e063ce6af4cfaaea4ea14fbb"
-      },
-      "sequence": 4294967295
-    }
-  ],
-  "vout": [
-    {
-      "value": 0.01000000,
-      "n": 0,
-      "scriptPubKey": {
-        "asm": "OP_DUP OP_HASH160 39aa3d569e06a1d7926dc4be1193c99bf2eb9ee0 OP_EQUALVERIFY OP_CHECKSIG",
-        "hex": "76a91439aa3d569e06a1d7926dc4be1193c99bf2eb9ee088ac",
-        "reqSigs": 1,
-        "type": "pubkeyhash",
-        "addresses": [
-          "16FuTPaeRSPVxxCnwQmdyx2PQWxX6HWzhQ"
-        ]
-      }
-    }
-  ],
-```
-
-### P2SHトランザクションの例
-
-#### outputがP2SH
-
-```json
-TXID: 1ab250fa3fe855a3f75094d6c64711d2de4bb0275f49fcd10e9cfb2dd7ea5ef9
-  "vin": [
-    {
-      "txid": "8c22a2fc0b47e57ffb7fb39d485182ea095b88c6c575b4b6ef17a3972758a3de",
-      "vout": 1,
-      "scriptSig": {
-        "asm": "0 3044022007b6230b6e873b531e00343cef2fe6d9a5ff49af13ab4c1b965c4cdfee2b1c6902204898ebe968dbf5883eef8496ea3eccce5469e5b2d7ede37c95bb042853692b87[ALL] 30440220755ee10b8a5583937a12115506b2ed75973d9588e7e729f99dca365a22ac1d1802201e499d2f8919571b477ade650cae7579b402390868f8bd12590bc46d415a68f3[ALL] 522103da136fce845379d1aaa502875acb4c04ccff771369d811f886d48ec0e63f87c6210392e4ecdd0af74a2d05b9448343b22fac173c1618c62caf2039efb09c7e67f2d452ae",
-        "hex": "00473044022007b6230b6e873b531e00343cef2fe6d9a5ff49af13ab4c1b965c4cdfee2b1c6902204898ebe968dbf5883eef8496ea3eccce5469e5b2d7ede37c95bb042853692b87014730440220755ee10b8a5583937a12115506b2ed75973d9588e7e729f99dca365a22ac1d1802201e499d2f8919571b477ade650cae7579b402390868f8bd12590bc46d415a68f30147522103da136fce845379d1aaa502875acb4c04ccff771369d811f886d48ec0e63f87c6210392e4ecdd0af74a2d05b9448343b22fac173c1618c62caf2039efb09c7e67f2d452ae"
-      },
-      "sequence": 4294967295
-    }
-  ],
-  "vout": [
-    {
-      "value": 0.56014000,
-      "n": 0,
-      "scriptPubKey": {
-        "asm": "OP_HASH160 02ba02ae8ac0da7de4427cf01251ca9a4fde780a OP_EQUAL",
-        "hex": "a91402ba02ae8ac0da7de4427cf01251ca9a4fde780a87",
-        "reqSigs": 1,
-        "type": "scripthash",
-        "addresses": [
-          "31wS7ALiatDhtwufApCr32xDX6kVK42Knu"
-        ]
-      }
-    },
-    {
-      "value": 0.01360000,
-      "n": 1,
-      "scriptPubKey": {
-        "asm": "OP_HASH160 6ab991f4bb25666199e79eec27b61b68414b433a OP_EQUAL",
-        "hex": "a9146ab991f4bb25666199e79eec27b61b68414b433a87",
-        "reqSigs": 1,
-        "type": "scripthash",
-        "addresses": [
-          "3BRKrWx4XbvSyvqLAALHZp13fVW8pUUZY2"
-        ]
-      }
-    }
-  ],
-```
-
-
-#### inputがP2SH
-
-```json
-TXID: b5986fc13fcb5ba7ddb36457edb30fa3f5c0b2f873bc003167530b1b8bb49540
-  "vin": [
-    {
-      "txid": "ca90933485cc7bd24c7e6a2466679614a8c467b04763f06d8417d6908d8ccbf2",
-      "vout": 1,
-      "scriptSig": {
-        "asm": "0 304402205a48106d0cba2c986dfbdd6f6c12d9a05ba80fa99984eb313fcd974d70e4a2db02203dbea13b1c9a6fce2190079f8fecbd713d8ba4d0d886c12db06ef1eeffc43145[ALL] 30440220331814dc1d49769f8f5859e86bc27f1b2f9b01d40a989d434e6b9ee9ae6f958302200b0211bf78088e47fc3e52ab27f454b875018306e986c52b3688d235c41edf8b[ALL] 5221024eecce449d5eb8a93fb38f68f95d1de5c7d044a7f97428744d74d601d26363a6210392e4ecdd0af74a2d05b9448343b22fac173c1618c62caf2039efb09c7e67f2d452ae",
-        "hex": "0047304402205a48106d0cba2c986dfbdd6f6c12d9a05ba80fa99984eb313fcd974d70e4a2db02203dbea13b1c9a6fce2190079f8fecbd713d8ba4d0d886c12db06ef1eeffc43145014730440220331814dc1d49769f8f5859e86bc27f1b2f9b01d40a989d434e6b9ee9ae6f958302200b0211bf78088e47fc3e52ab27f454b875018306e986c52b3688d235c41edf8b01475221024eecce449d5eb8a93fb38f68f95d1de5c7d044a7f97428744d74d601d26363a6210392e4ecdd0af74a2d05b9448343b22fac173c1618c62caf2039efb09c7e67f2d452ae"
-      },
-      "sequence": 4294967295
-    },
-    {
-      "txid": "1ab250fa3fe855a3f75094d6c64711d2de4bb0275f49fcd10e9cfb2dd7ea5ef9",
-      "vout": 0,
-      "scriptSig": {
-        "asm": "0 3044022041c4bc0e23191e2d74eb7ceb65468c137cf3b731adef8d360337c7abf5a2be8402201433c80aab49fd889834372021584685a07e812f52c89a66e12bde769bbb44fb[ALL] 3045022100fe13cb51b2e9310716cda10b7ff594599dd445d847b1ff36949b3e9e1770c28702203d15ce59c2365a7afcb68554a665e7feffba2befd3c8840a5563a1641e2a8688[ALL] 5221024eecce449d5eb8a93fb38f68f95d1de5c7d044a7f97428744d74d601d26363a6210392e4ecdd0af74a2d05b9448343b22fac173c1618c62caf2039efb09c7e67f2d452ae",
-        "hex": "00473044022041c4bc0e23191e2d74eb7ceb65468c137cf3b731adef8d360337c7abf5a2be8402201433c80aab49fd889834372021584685a07e812f52c89a66e12bde769bbb44fb01483045022100fe13cb51b2e9310716cda10b7ff594599dd445d847b1ff36949b3e9e1770c28702203d15ce59c2365a7afcb68554a665e7feffba2befd3c8840a5563a1641e2a868801475221024eecce449d5eb8a93fb38f68f95d1de5c7d044a7f97428744d74d601d26363a6210392e4ecdd0af74a2d05b9448343b22fac173c1618c62caf2039efb09c7e67f2d452ae"
-      },
-      "sequence": 4294967295
-    },
-    {
-      "txid": "d2f0a4643268380d856f5c16bda5c1e639695c564dd7eaf90fb0231caab579c8",
-      "vout": 0,
-      "scriptSig": {
-        "asm": "0 30450221008d7862ce68fa68cea600fd36247f7f4cd56db8e817984e75f84ab46d592db6de022060d590cdce3ace69621000ca98cd32392410011c6017b0f608613216697e4265[ALL] 3045022100b5e86856078a0ed80ec478ab6fb28971bc5d8f31d9134a5ec0897027ebcb49c702204fd4cd8b63435166c07ff0284938a06d953c8307905a16779590e63e0e54dd8d[ALL] 5221024eecce449d5eb8a93fb38f68f95d1de5c7d044a7f97428744d74d601d26363a6210392e4ecdd0af74a2d05b9448343b22fac173c1618c62caf2039efb09c7e67f2d452ae",
-        "hex": "004830450221008d7862ce68fa68cea600fd36247f7f4cd56db8e817984e75f84ab46d592db6de022060d590cdce3ace69621000ca98cd32392410011c6017b0f608613216697e426501483045022100b5e86856078a0ed80ec478ab6fb28971bc5d8f31d9134a5ec0897027ebcb49c702204fd4cd8b63435166c07ff0284938a06d953c8307905a16779590e63e0e54dd8d01475221024eecce449d5eb8a93fb38f68f95d1de5c7d044a7f97428744d74d601d26363a6210392e4ecdd0af74a2d05b9448343b22fac173c1618c62caf2039efb09c7e67f2d452ae"
-      },
-      "sequence": 4294967295
-    }
-  ],
-  "vout": [
-    {
-      "value": 2.33500000,
-      "n": 0,
-      "scriptPubKey": {
-        "asm": "OP_DUP OP_HASH160 5a7b34b109c641ffd0b071500f522ad646154c78 OP_EQUALVERIFY OP_CHECKSIG",
-        "hex": "76a9145a7b34b109c641ffd0b071500f522ad646154c7888ac",
-        "reqSigs": 1,
-        "type": "pubkeyhash",
-        "addresses": [
-          "19FRQkpwcuvPpSBAWTE2eraT4ZrVZupgFi"
-        ]
-      }
-    },
-    {
-      "value": 0.00097000,
-      "n": 1,
-      "scriptPubKey": {
-        "asm": "OP_HASH160 02ba02ae8ac0da7de4427cf01251ca9a4fde780a OP_EQUAL",
-        "hex": "a91402ba02ae8ac0da7de4427cf01251ca9a4fde780a87",
-        "reqSigs": 1,
-        "type": "scripthash",
-        "addresses": [
-          "31wS7ALiatDhtwufApCr32xDX6kVK42Knu"
-        ]
-      }
-    }
-  ],
-
-
-```
-
-### P2WPKHトランザクションの例
-
-#### outputがP2WPKH
-
-```json
-TXID: 47d8ca8dbd95b4d8bbed04dce3ed38ecec8c72feb560f0a3478f85f9a04d2095
-   "vin": [
-    {
-      "txid": "47d8ca8dbd95b4d8bbed04dce3ed38ecec8c72feb560f0a3478f85f9a04d2095",
-      "vout": 0,
-      "scriptSig": {
-        "asm": "",
-        "hex": ""
-      },
-      "txinwitness": [
-        "3043022051e3240a28beaf32e95d8afd16b0b56912cf8d073ad4a0b65720360a085e6f24021f06afef0b72e8952a74c9a64f76c40d9a418000a627afdc8f25ad81ed61f9f001",
-        "037a7b44ba74891a7d8e5e665852abaafdb0032dec22ea7b05a2a70d6754c1b668"
-      ],
-      "sequence": 4294967295
-    }
-  ],
-  "vout": [
-    {
-      "value": 11.78911630,
-      "n": 0,
-      "scriptPubKey": {
-        "asm": "0 b2fca4ea309243a1ef3e6c9aaec67f5b335db676",
-        "hex": "0014b2fca4ea309243a1ef3e6c9aaec67f5b335db676",
-        "reqSigs": 1,
-        "type": "witness_v0_keyhash",
-        "addresses": [
-          "bc1qkt72f63sjfp6rme7djd2a3nltve4mdnkj67tq2"
-        ]
-      }
-    },
-    {
-      "value": 47.82522001,
-      "n": 1,
-      "scriptPubKey": {
-        "asm": "0 0ecc437e1487ca5951775ed93b19321aa4f7a94c",
-        "hex": "00140ecc437e1487ca5951775ed93b19321aa4f7a94c",
-        "reqSigs": 1,
-        "type": "witness_v0_keyhash",
-        "addresses": [
-          "bc1qpmxyxls5sl99j5thtmvnkxfjr2j0022vy46hvq"
-        ]
-      }
-    }
-  ],
-
-```
-
-#### input がP2WPKH
-
-```json
-TXID: 9d9463c62424d13bb4e6a64397adeedf5a5a0db8b66243ba779f006a3f87e9e8
-  "vin": [
-    {
-      "txid": "47d8ca8dbd95b4d8bbed04dce3ed38ecec8c72feb560f0a3478f85f9a04d2095",
-      "vout": 0,
-      "scriptSig": {
-        "asm": "",
-        "hex": ""
-      },
-      "txinwitness": [
-        "3043022051e3240a28beaf32e95d8afd16b0b56912cf8d073ad4a0b65720360a085e6f24021f06afef0b72e8952a74c9a64f76c40d9a418000a627afdc8f25ad81ed61f9f001",
-        "037a7b44ba74891a7d8e5e665852abaafdb0032dec22ea7b05a2a70d6754c1b668"
-      ],
-      "sequence": 4294967295
-    }
-  ],
-  "vout": [
-    {
-      "value": 11.78911630,
-      "n": 0,
-      "scriptPubKey": {
-        "asm": "0 b2fca4ea309243a1ef3e6c9aaec67f5b335db676",
-        "hex": "0014b2fca4ea309243a1ef3e6c9aaec67f5b335db676",
-        "reqSigs": 1,
-        "type": "witness_v0_keyhash",
-        "addresses": [
-          "bc1qkt72f63sjfp6rme7djd2a3nltve4mdnkj67tq2"
-        ]
-      }
-    },
-    {
-      "value": 47.82522001,
-      "n": 1,
-      "scriptPubKey": {
-        "asm": "0 0ecc437e1487ca5951775ed93b19321aa4f7a94c",
-        "hex": "00140ecc437e1487ca5951775ed93b19321aa4f7a94c",
-        "reqSigs": 1,
-        "type": "witness_v0_keyhash",
-        "addresses": [
-          "bc1qpmxyxls5sl99j5thtmvnkxfjr2j0022vy46hvq"
-        ]
-      }
-    }
-  ],
-
-```
-
-### P2WSHの例
-
-#### output がP2WSH
-
-output 0 は，P2WPKHですが，
-output 1 は，P2WSHです。
-送金先アドレスの長さがP2WPKHとP2WSHで異なっていることを確認してください。
-
-
-```json
-TXID: 5f6b4c79fa22595b18267b9c41a1c4d884dbdd845fed5f0d434e603d32b9d90c
-{
-  "txid": "5f6b4c79fa22595b18267b9c41a1c4d884dbdd845fed5f0d434e603d32b9d90c",
-  "hash": "db445346a91d7e2f759944fe1d9ae4d0598cec8b6da4a451641eec133daf9b7c",
-  "version": 1,
-  "size": 380,
-  "vsize": 189,
-  "weight": 755,
-  "locktime": 0,
-  "vin": [
-    {
-      "txid": "706da882c755ea6045d48da8e7b9d97c1fa12ca4f91d762ad9240f760593b811",
-      "vout": 0,
-      "scriptSig": {
-        "asm": "",
-        "hex": ""
-      },
-      "txinwitness": [
-        "",
-        "3045022100bf951e845350cf970b20bb66977cb9e286309f7e6541c11b14d2bc0185d4538e02205d3d0b945e5cc5cfeb674d755ccb54f9f47aba00d4c2338050be85c27d58e6d201",
-        "3044022033e56b7886d032a1083b6ccf0fa43a010dfccf9cd25b31ab40ef4d78bc35de230220237d715d28a3d3aeb7bc7ed9998d6a21679a5ac2b843863c25d544dfe93ab5a201",
-        "522103df45a9e283fc94ae50a4e59e8d1457cc0a9153c862549a581c54abe984a502852103370782f64f5af8aa5155ed3d6c859c7c5055a66f395bd448941c0c77f04f5ecb2102f06ac375535c38d1997330819ea4d6f0de1db6e81221319e98ef526fa2bab07353ae"
-      ],
-      "sequence": 4294967295
-    }
-  ],
-  "vout": [
-    {
-      "value": 0.02954727,
-      "n": 0,
-      "scriptPubKey": {
-        "asm": "0 a0845b2f31ee9ab646316c75c95b9a9767fad556",
-        "hex": "0014a0845b2f31ee9ab646316c75c95b9a9767fad556",
-        "reqSigs": 1,
-        "type": "witness_v0_keyhash",
-        "addresses": [
-          "bc1q5zz9kte3a6dtv333d36ujku6janl442klc7km5"
-        ]
-      }
-    },
-    {
-      "value": 0.65931867,
-      "n": 1,
-      "scriptPubKey": {
-        "asm": "0 7250d91085a77a4568fa4cfd5bebb59f0b9cb3530f8154cd4fab6d28abd548fe",
-        "hex": "00207250d91085a77a4568fa4cfd5bebb59f0b9cb3530f8154cd4fab6d28abd548fe",
-        "reqSigs": 1,
-        "type": "witness_v0_scripthash",
-        "addresses": [
-          "bc1qwfgdjyy95aay2686fn74h6a4nu9eev6np7q4fn204dkj3274frlqrskvx0"
-        ]
-      }
-    }
-  ],
-```
-
-#### input がP2WSH
-
-```json
-TXID: cb519543f84b8a7e59e397fe5dbe8d25a57bb26d23f3c16df76f4b53a4110ed9
-  "vin": [
-    {
-      "txid": "faf4a369cc8f76c78932173ef8ab736e7a6a9325613348a2db90235bdd4a91a7",
-      "vout": 1,
-      "scriptSig": {
-        "asm": "",
-        "hex": ""
-      },
-      "txinwitness": [
-        "",
-        "30450221008338e8e711658efa865e684696d3a82d3987a770df7a76deebd54fa8e4ae1d010220698b4c05ab35f4522ddf7a44c53c42fd0c6b498e56f13fa1865f0c43ae1efb2d01",
-        "304402207c38e8571f30677a14f325d0b5be49ff8e52f169f8d0b611c25b3c3c2cc327e60220035bea7d802b5b98bb030e86f527a76d1f492309fb7b08d32424c09d4096d76301",
-        "5221030fac04165b606dea3b8f81ada5eb66ca181d5215c873fcf46623ea7cf8e98b1b2102b7836a2a9d3ff095415383cb23a5f4f1badd75e44adb17537962eafe3ded3b602102f8cb472df1ae03cfa6b65b013add7862c7d3ac3684a8a92a44192faace228aee53ae"
-      ],
-      "sequence": 4294967295
-    },
-    {
-      "txid": "5f6b4c79fa22595b18267b9c41a1c4d884dbdd845fed5f0d434e603d32b9d90c",
-      "vout": 1,
-      "scriptSig": {
-        "asm": "",
-        "hex": ""
-      },
-      "txinwitness": [
-        "",
-        "3045022100ea813a4980cd70b2a6df19989c84a9ceffe9e9dafe48cd9bddcfc23112024c780220180844620505a94eb7a9e72f1b9493429fecc74bf0719ca060b0c49bc70203e401",
-        "3044022043381d9d1c49cee3e3ffa29be4f2ca7d9133e57b3e4d33e2993b971f21951edf022018d243aea690f1155d3391ab7418dc8cf41b5a8f6daaec056374b489eac0985001",
-        "5221030fac04165b606dea3b8f81ada5eb66ca181d5215c873fcf46623ea7cf8e98b1b2102b7836a2a9d3ff095415383cb23a5f4f1badd75e44adb17537962eafe3ded3b602102f8cb472df1ae03cfa6b65b013add7862c7d3ac3684a8a92a44192faace228aee53ae"
-      ],
-      "sequence": 4294967295
-    },
-
-        ... 
-
-
-  ],
-  "vout": [
-    {
-      "value": 0.00306688,
-      "n": 0,
-      "scriptPubKey": {
-        "asm": "0 e51a6a803f87397f20f6ac15b41a41570335a4c9",
-        "hex": "0014e51a6a803f87397f20f6ac15b41a41570335a4c9",
-        "reqSigs": 1,
-        "type": "witness_v0_keyhash",
-        "addresses": [
-          "bc1qu5dx4qplsuuh7g8k4s2mgxjp2upntfxfn5lexc"
-        ]
-      }
-    },
-    {
-      "value": 4.90800000,
-      "n": 1,
-      "scriptPubKey": {
-        "asm": "OP_DUP OP_HASH160 601ed29608005c18a41840912b216160b06602db OP_EQUALVERIFY OP_CHECKSIG",
-        "hex": "76a914601ed29608005c18a41840912b216160b06602db88ac",
-        "reqSigs": 1,
-        "type": "pubkeyhash",
-        "addresses": [
-          "19mEo1ShCRu1AzqCuqFBrpKaTuyqKfNtxX"
-        ]
-      }
-    },
-    {
-      "value": 0.01041349,
-      "n": 2,
-      "scriptPubKey": {
-        "asm": "0 7250d91085a77a4568fa4cfd5bebb59f0b9cb3530f8154cd4fab6d28abd548fe",
-        "hex": "00207250d91085a77a4568fa4cfd5bebb59f0b9cb3530f8154cd4fab6d28abd548fe",
-        "reqSigs": 1,
-        "type": "witness_v0_scripthash",
-        "addresses": [
-          "bc1qwfgdjyy95aay2686fn74h6a4nu9eev6np7q4fn204dkj3274frlqrskvx0"
-        ]
-      }
-    }
-  ],
-
-```
-
-### P2PKHトランザクションの作成(signet環境)
-
-
-#### input(UTXO) のJSON形式
-
-```json
-'[{"txid": "c691e521b77f7e59425d9f51b98c9897f2f40bb6165bc595156fb8e69ef3fce7","vout": 0}]'
-```
-
-#### output のJSON形式
-
-```json
-'[{"1JxDJCyWNakZ5kECKdCU9Zka6mh34mZ7B2":0.01}]'
-```
-
-#### P2PKHトランザクション作成
-
-```
-bitcoin-core.cli createrawtransaction  '[{"txid": "c691e521b77f7e59425d9f51b98c9897f2f40bb6165bc595156fb8e69ef3fce7","vout": 0}]' '[{"1JxDJCyWNakZ5kECKdCU9Zka6mh34mZ7B2":0.01}]'
-```
-
-```
-2f40bb6165bc595156fb8e69ef3fce7","vout": 0}]' '[{"1JxDJCyWNakZ5kECKdCU9Zka6mh34mZ7B2":0.01}]'
-0200000001e7fcf39ee6b86f1595c55b16b60bf4f297988cb9519f5d42597e7fb721e591c60000000000ffffffff0140420f00000000001976a914c4eb47ecfdcf609a1848ee79acc2fa49d3caad7088ac00000000
-```
-
 
