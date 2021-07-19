@@ -1427,6 +1427,28 @@ bitcoin-core.cli decoderawtransaction 02000000017e04eaf02015f602c87d8ec300a95ed0
 }
 ```
 
+### bitcoinrb によるトランザクションの作成
+
+```ruby
+require 'bitcoin'
+Bitcoin.chain_params = :signet
+
+tx = Bitcoin::Tx.new
+tx.version = 2
+# add input
+out_point = Bitcoin::OutPoint.from_txid("1c0b7a6d31c2c0d0a7b3f1acebef9480d05ea900c38e7dc802f61520f0ea047e", 0)
+tx_in = Bitcoin::TxIn.new(out_point: out_point)
+
+
+# add output
+amount= 9300000
+address='tb1qj29lwmk6ezs4n7r79lzcp6jrdkf5x9g8e2pzf9'
+script_pubkey = Bitcoin::Script.parse_from_addr(address)
+ 
+
+
+```
+
 ### UTXOのタイムロック（OP_CLTVとOP_CSV）
 
 

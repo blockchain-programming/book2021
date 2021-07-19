@@ -1600,61 +1600,22 @@ bitcoinrb はRuby言語によるbitcoin core API をRuby から操作するラ�
 
 bitcoinrb の基本操作を習得しておいてください。
 
-### ビットコインスクリプト
-
-bitcoinrb
+### bitcoinrb から bitcoin core RPC API を利用
 
 ```ruby
 require 'bitcoin'
-
-script="2 3 OP_ADD 5 OP_EQUAL"
-s=Bitcoin::Script.from_string(script)
-s.run
-=> true
-
-txid="50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5"
-script="#{txid} OP_HASH160"
-s=Bitcoin::Script.from_string(script)
-s.debug
-```
-
-### トランザクション作成
-
-#### 自分が所持しているUTXOを確認する
-
-送金に使用するTXIDとvout を確認します。
-
-```json
- bitcoin-core.cli listunspent
- 
-[ {
-    "txid": "50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5",
-    "vout": 1,
-    "address": "tb1qfdmuhak44h3akp0dx6q5qpytuta6e6888mjlw4",
-    "label": "",
-    "scriptPubKey": "00144b77cbf6d5ade3db05ed368140048be2fbace8e7",
-    "amount": 0.01000000,
-    "confirmations": 712,
-    "spendable": true,
-    "solvable": true,
-    "desc": "wpkh([bc02bd98/0'/0'/0']0336c2710513b6182697a2b9ce8e6f6e8dae2b568ac32b27b45f142a2b6697005c)#z4fmc5jj",
-    "safe": true
-  }
-  ]
-```
-
-bitcoinrb でsignet のbitcoin core RPC API を利用します。
-
-```ruby
-require 'bitcoin'
-Bitcoin.chain_params = :signet
-
 require 'net/http'
 require 'json'
+
+Bitcoin.chain_params = :signet
+
 RPCUSER="hoge"
 RPCPASSWORD="hoge"
 HOST="localhost"
 PORT=38332
+
+# トランザクション手数料
+fee=0.0002
  
 def bitcoinRPC(method, params)
  	http = Net::HTTP.new(HOST, PORT)
@@ -1667,165 +1628,55 @@ end
 ```
 
 
-```ruby
-tx = Bitcoin::Tx.new
+### トランザクションの生成，署名，ブロードキャスト
 
+* UTXOの確認
+
+```ruby
+utxos=bitcoinRPC('listunspent', [])
 ```
 
-----
+トランザクションinput UTXO
 
-## bitcoin RPC API
+```ruby
+txid=utxos[0]["txid"]
+index=utxos[0]["vout"]
+amount=utxos[0]["amount"]
+receive_addr=utxos[0]["address"]
+scriptPubKey=utxos[0]["scriptPubKey"]
+```
 
-* Blockchain RPCs
-    * getbestblockhash
-    * getblock
-    * getblockchaininfo
-    * getblockcount
-    * getblockfilter
-    * getblockhash
-    * getblockheader
-    * getblockstats
-    * getchaintips
-    * getchaintxstats
-    * getdifficulty
-    * getmempoolancestors
-    * getmempooldescendants
-    * getmempoolentry
-    * getmempoolinfo
-    * getrawmempool
-    * gettxout
-    * gettxoutproof
-    * gettxoutsetinfo
-    * preciousblock
-    * pruneblockchain
-    * savemempool
-    * scantxoutset
-    * verifychain
-    * verifytxoutproof
+* 送金先ビットコインアドレスの生成
 
-* Control RPCs
-    * getmemoryinfo
-    * getrpcinfo
-    * help
-    * logging
-    * stop
-    * uptime
+```ruby
+send_addr=bitcoinRPC('getnewaddress', [])
+```
 
-* Generating RPCs
-    * generateblock
-    * generatetoaddress
-    * generatetodescriptor
+* 未署名トランザクション生成 (P2WPKH)
 
-* Mining RPCs
-    * getblocktemplate
-    * getmininginfo
-    * getnetworkhashps
-    * prioritisetransaction
-    * submitblock
-    * submitheader
+```ruby
+tx = Bitcoin::Tx.new
+tx.version = 2
 
-* Network RPCs
-    * addnode
-    * clearbanned
-    * disconnectnode
-    * getaddednodeinfo
-    * getconnectioncount
-    * getnettotals
-    * getnetworkinfo
-    * getnodeaddresses
-    * getpeerinfo
-    * listbanned
-    * ping
-    * setban
-    * setnetworkactive
+# input
+tx.in << Bitcoin::TxIn.new(out_point: Bitcoin::OutPoint.from_txid(txid, index))
 
-* Rawtransactions RPCs
-    * analyzepsbt
-    * combinepsbt
-    * combinerawtransaction
-    * converttopsbt
-    * createpsbt
-    * createrawtransaction
-    * decodepsbt
-    * decoderawtransaction
-    * decodescript
-    * finalizepsbt
-    * fundrawtransaction
-    * getrawtransaction
-    * joinpsbts
-    * sendrawtransaction
-    * signrawtransactionwithkey
-    * testmempoolaccept
-    * utxoupdatepsbt
+# output
+value=(amount*(10**8)-(fee*(10**8))).to_i
+tx.out << Bitcoin::TxOut.new(value: value  , script_pubkey: Bitcoin::Script.parse_from_addr(send_addr))
+```
 
-* Util RPCs
-    * createmultisig
-    * deriveaddresses
-    * estimatesmartfee
-    * getdescriptorinfo
-    * getindexinfo
-    * signmessagewithprivkey
-    * validateaddress
-    * verifymessage
+* トランザクションへの署名 (P2WPKH)
 
-* Wallet RPCs
-(Note: the wallet RPCs are only available if Bitcoin Core was built with wallet support, which is the default.)
-    * abandontransaction
-    * abortrescan
-    * addmultisigaddress
-    * backupwallet
-    * bumpfee
-    * createwallet
-    * dumpprivkey
-    * dumpwallet
-    * encryptwallet
-    * getaddressesbylabel
-    * getaddressinfo
-    * getbalance
-    * getbalances
-    * getnewaddress
-    * getrawchangeaddress
-    * getreceivedbyaddress
-    * getreceivedbylabel
-    * gettransaction
-    * getunconfirmedbalance
-    * getwalletinfo
-    * importaddress
-    * importdescriptors
-    * importmulti
-    * importprivkey
-    * importprunedfunds
-    * importpubkey
-    * importwallet
-    * keypoolrefill
-    * listaddressgroupings
-    * listlabels
-    * listlockunspent
-    * listreceivedbyaddress
-    * listreceivedbylabel
-    * listsinceblock
-    * listtransactions
-    * listunspent
-    * listwalletdir
-    * listwallets
-    * loadwallet
-    * lockunspent
-    * psbtbumpfee
-    * removeprunedfunds
-    * rescanblockchain
-    * send
-    * sendmany
-    * sendtoaddress
-    * sethdseed
-    * setlabel
-    * settxfee
-    * setwalletflag
-    * signmessage
-    * signrawtransactionwithwallet
-    * unloadwallet
-    * upgradewallet
-    * walletcreatefundedpsbt
-    * walletlock
-    * walletpassphrase
-    * walletpassphrasechange
-    * walletprocesspsbt
+```ruby
+# 未署名トランザクションの16進形式
+hex=tx.to_payload.bth
+
+# ワレット機能を利用したトランザクションへの署名
+transaction=bitcoinRPC('signrawtransactionwithwallet', [hex])
+
+# transaction オブジェクトへの変換
+tx = Bitcoin::Message::Tx.parse_from_payload(transaction["hex"].htb)
+
+
+```
