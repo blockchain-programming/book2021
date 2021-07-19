@@ -1334,7 +1334,9 @@ TXID
 
 ## 6.5 ビットコインスクリプトの応用例
 
-### 6.5.1 トランザクションのタイムロック
+### 6.5.1 bitcoinrb による
+
+### 6.5.2 トランザクションのタイムロック
 
 nLockTime が　500,000,000 未満の場合は，ブロック高の指定
 
@@ -1444,9 +1446,6 @@ tx_in = Bitcoin::TxIn.new(out_point: out_point)
 amount= 9300000
 address='tb1qj29lwmk6ezs4n7r79lzcp6jrdkf5x9g8e2pzf9'
 script_pubkey = Bitcoin::Script.parse_from_addr(address)
- 
-
-
 ```
 
 ### UTXOのタイムロック（OP_CLTVとOP_CSV）

@@ -1614,8 +1614,8 @@ RPCPASSWORD="hoge"
 HOST="localhost"
 PORT=38332
 
-# トランザクション手数料
-fee=0.0002
+# トランザクション手数料 (satoshi)
+fee=20000
  
 def bitcoinRPC(method, params)
  	http = Net::HTTP.new(HOST, PORT)
@@ -1628,6 +1628,7 @@ end
 ```
 
 
+
 ### トランザクションの生成，署名，ブロードキャスト
 
 * UTXOの確認
@@ -1636,20 +1637,29 @@ end
 utxos=bitcoinRPC('listunspent', [])
 ```
 
-トランザクションinput UTXO
+utxos[0] を使用することにします。
+
+* UTXOの情報
 
 ```ruby
 txid=utxos[0]["txid"]
 index=utxos[0]["vout"]
-amount=utxos[0]["amount"]
-receive_addr=utxos[0]["address"]
+amount=(utxos[0]["amount"]*(10**8)).to_i
+receipt_addr=utxos[0]["address"]
 scriptPubKey=utxos[0]["scriptPubKey"]
+prev_script_pubkey = Bitcoin::Script.parse_from_payload(scriptPubKey)
+```
+* 自分の鍵の情報（receipt_addrからわかる）
+
+```ruby
+privkey=bitcoinRPC('dumpprivkey', [receipt_addr])
+key = Bitcoin::Key.from_wif(privkey)
 ```
 
 * 送金先ビットコインアドレスの生成
 
 ```ruby
-send_addr=bitcoinRPC('getnewaddress', [])
+dest_addr=bitcoinRPC('getnewaddress', [])
 ```
 
 * 未署名トランザクション生成 (P2WPKH)
@@ -1659,24 +1669,22 @@ tx = Bitcoin::Tx.new
 tx.version = 2
 
 # input
-tx.in << Bitcoin::TxIn.new(out_point: Bitcoin::OutPoint.from_txid(txid, index))
+outpoint=Bitcoin::OutPoint.from_txid(txid, index)
+tx.in << Bitcoin::TxIn.new(out_point: outpoint)
 
 # output
-value=(amount*(10**8)-(fee*(10**8))).to_i
-tx.out << Bitcoin::TxOut.new(value: value  , script_pubkey: Bitcoin::Script.parse_from_addr(send_addr))
+script_pubkey=Bitcoin::Script.parse_from_addr(dest_addr)
+value=amount-fee
+tx.out << Bitcoin::TxOut.new(value: value,script_pubkey: script_pubkey)
 ```
 
 * トランザクションへの署名 (P2WPKH)
 
 ```ruby
-# 未署名トランザクションの16進形式
-hex=tx.to_payload.bth
+sighash = tx.sighash_for_input(index,prev_script_pubkey, sig_version: :witness_v0, amount: amount)
+sign = key.sign(sighash) + [Bitcoin::SIGHASH_TYPE[:all]].pack('C')
 
-# ワレット機能を利用したトランザクションへの署名
-transaction=bitcoinRPC('signrawtransactionwithwallet', [hex])
-
-# transaction オブジェクトへの変換
-tx = Bitcoin::Message::Tx.parse_from_payload(transaction["hex"].htb)
-
-
+tx.in[0].script_witness.stack << sign
+tx.in[0].script_witness.stack << key.pubkey.htb
 ```
+
