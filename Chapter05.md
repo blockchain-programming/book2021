@@ -1629,7 +1629,7 @@ end
 
 
 
-### トランザクションの生成，署名，ブロードキャスト
+### トランザクションの生成，署名
 
 * UTXOの確認
 
@@ -1669,7 +1669,6 @@ tx = Bitcoin::Tx.new
 tx.version = 2
 
 # inputの作成
-
 outpoint=Bitcoin::OutPoint.from_txid(txid, index)
 tx.in << Bitcoin::TxIn.new(out_point: outpoint)
 
@@ -1683,9 +1682,9 @@ tx.out << Bitcoin::TxOut.new(value: value,script_pubkey: script_pubkey)
 * トランザクションへの署名 (P2WPKH)
 
 ```ruby
-# P2PKHの署名作成
-
+# P2WPKHの
 sighash = tx.sighash_for_input(index,prev_script_pubkey, sig_version: :witness_v0, amount: amount)
+
 sign = key.sign(sighash) + [Bitcoin::SIGHASH_TYPE[:all]].pack('C')
 
 tx.in[0].script_witness.stack << sign
@@ -1697,5 +1696,6 @@ tx.in[0].script_witness.stack << key.pubkey.htb
 * 署名済トランザクションの16進形式
 
 ```ruby
-transaction=tx.to_payload.bth
+signedhex=tx.to_payload.bth
 ```
+
