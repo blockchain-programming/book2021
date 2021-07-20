@@ -1668,11 +1668,13 @@ dest_addr=bitcoinRPC('getnewaddress', [])
 tx = Bitcoin::Tx.new
 tx.version = 2
 
-# input
+# inputの作成
+
 outpoint=Bitcoin::OutPoint.from_txid(txid, index)
 tx.in << Bitcoin::TxIn.new(out_point: outpoint)
 
-# output
+# outputの作成
+
 script_pubkey=Bitcoin::Script.parse_from_addr(dest_addr)
 value=amount-fee
 tx.out << Bitcoin::TxOut.new(value: value,script_pubkey: script_pubkey)
@@ -1681,10 +1683,19 @@ tx.out << Bitcoin::TxOut.new(value: value,script_pubkey: script_pubkey)
 * トランザクションへの署名 (P2WPKH)
 
 ```ruby
+# P2PKHの署名作成
+
 sighash = tx.sighash_for_input(index,prev_script_pubkey, sig_version: :witness_v0, amount: amount)
 sign = key.sign(sighash) + [Bitcoin::SIGHASH_TYPE[:all]].pack('C')
 
 tx.in[0].script_witness.stack << sign
 tx.in[0].script_witness.stack << key.pubkey.htb
+
+
 ```
 
+* 署名済トランザクションの16進形式
+
+```ruby
+transaction=tx.to_payload.bth
+```
