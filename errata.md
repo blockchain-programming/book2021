@@ -24,6 +24,31 @@
     - 誤：ゲーム論
     - 正：ゲーム理論
 
+- p.341 付録 上から4行目の数式の説明文
+    - 誤：乗法逆元演算
+![\begin{align*}
+\frac{1}{x}
+\end{align*}
+](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0A%5Cfrac%7B1%7D%7Bx%7D%0A%5Cend%7Balign%2A%7D%0A)
+は加法逆元演算 
+ ![\begin{align*}
+-y
+\end{align*}
+](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0A-y%0A%5Cend%7Balign%2A%7D%0A)
+に写像される
+
+    - 正：乗法逆元演算
+![\begin{align*}
+\frac{1}{a}
+\end{align*}
+](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0A%5Cfrac%7B1%7D%7Ba%7D%0A%5Cend%7Balign%2A%7D%0A)
+は加法逆元演算
+![\begin{align*}
+-x \quad (x = \log (a))
+\end{align*}
+](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0A-x+%5Cquad+%28x+%3D+%5Clog+%28a%29%29%0A%5Cend%7Balign%2A%7D%0A)
+に写像される
+
 - p.347 付録「巡回群としてのGF(p<sup>n</sup>)」 下から4行目の数式
   - 誤：
 ![\begin{align*}
