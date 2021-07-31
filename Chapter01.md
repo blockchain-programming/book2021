@@ -91,7 +91,7 @@ blockchain=hashchain(data_list,IV)
  
  # 最終ハッシュ値
 lasthash=Digest::SHA256.hexdigest(blockchain[-1])
-=> "9af15b336e6a9619928537df30b2e6a2376569fcf9d7e773eccede65606529a0"
+=> "9455075057982b2d43c6fcaa9e5e75058efd43a21107f67526515face5c48365"
 ```
 
 ### 3. ハッシュチェーンと最終データのハッシュ値を入力とし，IV="0000" として，ハッシュチェーンの正統性を検証するプログラムを作成してください。
