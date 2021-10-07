@@ -1,5 +1,9 @@
 ## 正誤表（第1刷）
 
+- p.70 3章 下から2行目（参考文献[2]）
+    - 誤：https://cryptorating.eu/whitepapers/イーサリアム/イーサリアム_white_paper.pdf
+    - 正：https://cryptorating.eu/whitepapers/Ethereum/Ethereum_white_paper.pdf
+
 - p.75 4章 上から16行目（「散対数仮定（DL仮定）」の項）
     - 誤：生成限g
     - 正：生成元g
