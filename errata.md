@@ -1,5 +1,9 @@
 ## 正誤表（第1刷）
 
+- p.v 目次 一番下の行に追加
+    - 誤：（一番下の行に追加）
+    - 正：4.6 秘密計算……………………102
+
 - p.70 3章 下から2行目（参考文献[2]）
     - 誤：https://cryptorating.eu/whitepapers/イーサリアム/イーサリアム_white_paper.pdf
     - 正：https://cryptorating.eu/whitepapers/Ethereum/Ethereum_white_paper.pdf
@@ -15,6 +19,10 @@
 - p.75 4章 上から22行目（「DDH仮定」の項）
     - 誤：生成限g
     - 正：生成元g
+
+- p.102 4章 下から9行目
+    - 誤：秘密計算
+    - 正：4.6 秘密計算
 
 - p.130 5章 上から3つ目のコード
     - 誤：
