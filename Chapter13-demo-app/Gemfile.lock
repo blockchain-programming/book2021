@@ -161,8 +161,8 @@ GEM
     murmurhash3 (0.1.6)
     murmurhash3 (0.1.6-java)
     netrc (0.11.0)
-    nio4r (2.5.2)
-    nio4r (2.5.2-java)
+    nio4r (2.5.8)
+    nio4r (2.5.8-java)
     nokogiri (1.11.5)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
@@ -179,9 +179,9 @@ GEM
       thor
       thread_safe
     public_suffix (4.0.1)
-    puma (4.3.8)
+    puma (4.3.9)
       nio4r (~> 2.0)
-    puma (4.3.8-java)
+    puma (4.3.9-java)
       nio4r (~> 2.0)
     racc (1.5.2)
     racc (1.5.2-java)
