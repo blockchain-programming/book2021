@@ -4,6 +4,10 @@
     - 誤：（一番下の行に追加）
     - 正：4.6 秘密計算……………………102
 
+- p.54 3章 上から11行目
+    - 誤：1996年
+    - 正：1994年
+
 - p.70 3章 下から2行目（参考文献[2]）
     - 誤：https://cryptorating.eu/whitepapers/イーサリアム/イーサリアム_white_paper.pdf
     - 正：https://cryptorating.eu/whitepapers/Ethereum/Ethereum_white_paper.pdf
