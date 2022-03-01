@@ -1582,7 +1582,8 @@ bitcoin-core.cli decoderawtransaction 02000000017e04eaf02015f602c87d8ec300a95ed0
 
 ### 回答例
 
-P2WSH でマルチシグを実施する bitcoinrb のプログラム例です
+P2WSH でマルチシグのoutput を持つトランザクションと、さらにそれを inputとしてアンロックするトラン
+ザクションを構成しデプロイする bitcoinrb のプログラム例です
 
 ```ruby
 require 'bitcoin'
