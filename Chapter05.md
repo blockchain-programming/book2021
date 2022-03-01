@@ -10,7 +10,7 @@
 
 https://bitcoin.org/ja/download
 
-## 5.2 ビットコインノード ピア 
+## 5.2 ビットコインノード ピア
 
 インストールした bitcoin core アプリを起動するとIBDが始まります。
 デフォルトは  mainnet なので，IBDが完了するまでかなりの時間を要します。
@@ -29,7 +29,6 @@ bitcoin-core.qt &
 ```bash
 bitcoin-qt &
 ```
-
 
 ### bitcoin-cliコマンド
 
@@ -60,17 +59,15 @@ bitcoin core APIの仕様は，以下のリンクにあります。
 設定ファイル (bitcoin.conf) を編集
 
 * ubuntu で通常インストールしたときの bitcoin.conf のデフォルトの場所
-    *  ~/.bitcoin/bitcoin.conf
+  * ~/.bitcoin/bitcoin.conf
 * ubuntu でsnap でインストールした場合のbitcoin.conf のデフォルトの場所
-    * ~/snap/bitcoin-core/common/.bitcoin/bitcoin.conf
+  * ~/snap/bitcoin-core/common/.bitcoin/bitcoin.conf
 * MacOSX でパッケージインストールしたときのbitcoin.conf のデフォルトの場所
-    * ~/Library/Application Support/Bitcoin/bitcoin.conf
-
-
+  * ~/Library/Application Support/Bitcoin/bitcoin.conf
 1. MacOSX :「ファイル」メニューの 「preferences」..
-1. ubuntu: 「設定」メニューの「オプション」
-1. 「設定ファイルを開く」ボタンをクリック
-1. 設定ファイルを以下のように作成して保存（rpcuserとrpcpasswordは hoge から変更してください）
+2. ubuntu: 「設定」メニューの「オプション」
+3. 「設定ファイルを開く」ボタンをクリック
+4. 設定ファイルを以下のように作成して保存（rpcuserとrpcpasswordは hoge から変更してください）
 
 ```bash
 signet=1
@@ -93,7 +90,6 @@ fallbackfee=0.0002
 ```bash
 bitcoin-core.cli getnetworkinfo
 ```
-
 
 結果
 
@@ -139,11 +135,9 @@ bitcoin-core.cli getnetworkinfo
 
 #### 接続中のノードの情報一覧
 
-
 ```bash
 bitcoin-core.cli getpeerinfo
 ```
-
 
 結果
 
@@ -370,7 +364,6 @@ cPdid5XEhWiRps3XXLMh6q9ehxPenJ7NqfUpBsj4US7jnYW2QM4m
 
 ### テスト用のビットコインの入手方法
 
-
 Signet Faucetに自分のビットコインアドレスと入手希望金額を入力する
 
 * 自分のアドレス：tb1qfdmuhak44h3akp0dx6q5qpytuta6e6888mjlw4
@@ -567,7 +560,6 @@ listunspent
 ]
 ```
 
-
 ```bash
 # 実行例
 bitcoin-core.cli listunspent
@@ -603,17 +595,18 @@ bitcoin-core.cli listunspent
 ```
 
 * UTXO１
-    * トランザクションID：50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5
-    * 金額：0.08999818
-    * アウトプットのインデックス（vout）：0
+  
+  * トランザクションID：50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5
+  * 金額：0.08999818
+  * アウトプットのインデックス（vout）：0
 
 * UTXO２
-    * トランザクションID：50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5
-    * 金額：0.01000000
-    * アウトプットのインデックス（vout）：1
+  
+  * トランザクションID：50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5
+  * 金額：0.01000000
+  * アウトプットのインデックス（vout）：1
 
 ## 5.5 トランザクション
-
 
 #### トランザクションのデータを検索する
 
@@ -630,7 +623,6 @@ bitcoin.conf の設定で　txindex=1 を設定しているときには，自分
 
 トランザクションデータの16進数文字列
 ```
-
 
 ```
 # オプションがtrue のとき
@@ -808,7 +800,6 @@ bitcoin-core.cli  decoderawtransaction 02000000000101bb443e3199657c40d0368bc049c
     }
   ]
 }
-
 ```
 
 ### トランザクションの構成
@@ -816,11 +807,10 @@ bitcoin-core.cli  decoderawtransaction 02000000000101bb443e3199657c40d0368bc049c
 #### UTXOを使ったトランザクションのinputの作成
 
 * UTXO１
-    * トランザクションID：50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5
-    * 金額：0.08999818
-    * アウトプットのインデックス（vout）：0
+  * トランザクションID：50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5
+  * 金額：0.08999818
+  * アウトプットのインデックス（vout）：0
 
-    
 #### トランザクションの output の作成
 
 送金先アドレスとおつり用アドレスの生成
@@ -834,15 +824,20 @@ tb1qc0xxe80njvjxdf26prp2gluth0ge3840dvensy
 ```
 
 * 送金先アドレス：tb1qj0596apwztduay0ktk6lnhxxcumfz6mnnsykm3
+
 * おつりアドレス：tb1qc0xxe80njvjxdf26prp2gluth0ge3840dvensy
+
 * 送金金額：0.001
 
 * 使用するUTXOのTXID：044e1965b61d8a895fbcec7aeb9606add1564cc03c9403a9076ea901ecdc66da
-* 使用するUTXOのvout：0
-* UTXOの value： 0.10000000
-* 手数料：0.00001
-* おつり：0.08999818 - 0.001- 0.00001 = 0.08898818
 
+* 使用するUTXOのvout：0
+
+* UTXOの value： 0.10000000
+
+* 手数料：0.00001
+
+* おつり：0.08999818 - 0.001- 0.00001 = 0.08898818
 
 ### 未署名のトランザクションの作成
 
@@ -878,7 +873,6 @@ createrawtransaction <inputのJSON形式> <outputのJSON形式>
 ```
 
 作成するトランザクションの　input(UTXO)　のJSON形式の例
-
 
 ```json
 '[{"txid":"50dc0800c8421355e4bb719320f0216e5ac5ff21ed93bf06bf5ec2ec3a859fb5","vout":0}]' 
@@ -957,7 +951,6 @@ bitcoin-core.cli  decoderawtransaction 0200000001b59f853aecc25ebf06bf93ed21ffc55
   ]
 }
 ```
-
 
 ### トランザクションへのデジタル署名（ワレットの秘密鍵を利用）
 
@@ -1058,8 +1051,6 @@ bitcoin-core.cli decoderawtransaction  02000000000101b59f853aecc25ebf06bf93ed21f
 
 "vin" に "txinwitness" という 域が存在していることを確 してください。
 
-
-
 ### トランザクションのブロードキャスト
 
 ```
@@ -1112,7 +1103,16 @@ testmempoolaccept <JSON形式 '["16進数形式のトランザクション"]'>
 bitcoin-core.cli testmempoolaccept  '["02000000000101b59f853aecc25ebf06bf93ed21ffc55a6e21f0209371bbe4551342c80008dc500000000000ffffffff02a08601000000000016001493e85d742e12dbce91f65db5f9dcc6c736916b7302c9870000000000160014c3cc6c9df3932466a55a08c2a47f8bbbd1989eaf0247304402205bbb9072a528cc8b59f984fc0da90dfa6f85f93c495d35c184ea412f592ec3a002205c7ebe99570b691a476286e31cf3c97ad605511f88cf7fdbcf4a077d18a0a8440121030dd902b1a6f9d4844a166d81ecbf8d25ba213772182f5bd37fad8c9ad6a5bbf800000000"]'
 
 
-[  {    "txid": "856fe6d990663065d548dec117013477e7558053070649ccaa4325f2df51f969",    "allowed": true,    "vsize": 141,    "fees": {    "base": 0.00001000    }  }]
+[
+  {
+    "txid": "856fe6d990663065d548dec117013477e7558053070649ccaa4325f2df51f969",
+    "allowed": true,
+    "vsize": 141,
+    "fees": {
+    "base": 0.00001000
+    }
+  }
+]
 ```
 
 #### メモリプール内のtxidを確認する
@@ -1177,7 +1177,6 @@ bitcoin-core.cli getrawmempool
   "52f87afa63d9dd75c539cdfb92b9a556f77572129f3d38ecc7d1cd44db4c1c09"
 ]
 ```
-
 
 ## 5.6 ブロックチェーン
 
@@ -1294,7 +1293,6 @@ bitcoin-core.cli getblockheader 00000203b537056a20c93d7b43cff2dffb977e96267766f4
   "previousblockhash": "0000010ebfa3c6193793701c198392e21bdb8bc9fb2032f0d74a628d36e9a75e",
   "nextblockhash": "000002e1d2d6a4992d5aae0afa452d8ffeb3cc4488c220560fa06234b8fb13e8"
 }
-
 ```
 
  "previousblockhash" の値が，ブロック高1000のブロックハッシュと一致していることを確認してください。
@@ -1332,7 +1330,6 @@ getblock <ブロックハッシュ>
 }
 ```
 
-
 ```bash
 # 実行例
 bitcoin-core.cli getblock 00000114208c2281068d15a10b266dd49a4d723c797101a3f5decef1f6c5977e
@@ -1366,11 +1363,9 @@ bitcoin-core.cli getblock 00000114208c2281068d15a10b266dd49a4d723c797101a3f5dece
 }
 ```
 
-
 ### プルーフ・オブ・ワークによるマイニング
 
 ブロックのマイニングは次のコマンドで実行できますが，signet はマイニングの成功だけではブロック生成の権限がないので失敗してしまいます。実験するなら regtest モードでノードを起動しましょう。
-
 
 #### bitcoind を再起動
 
@@ -1378,10 +1373,12 @@ bitcoin-core.cli getblock 00000114208c2281068d15a10b266dd49a4d723c797101a3f5dece
 # bitcoind を停止
 bitcoin-core.cli stop
 ```
+
 (snap の場合，cd ~/snap/bitcoin-core/common/.bitcoin/)
 regtest用の　bitcoin.conf を作成（signetの設定ファイルも別名で保管しておく）
 
 bitcoin.conf
+
 ```
 regtest=1
 ```
@@ -1390,7 +1387,6 @@ regtest=1
 # bitcoind を regtestモードで再起動
 bitcoin-core.daemon &
 ```
-
 
 #### マイニング
 
@@ -1407,18 +1403,22 @@ generatetoaddress <マイングするブロック数> <ビットコインアド�
 ]
 ```
 
-```
-# 実行例
+##### 実行例
+
+```bash
 ## ワレット作成
 bitcoin-core.cli createwallet alice 
 
 ## アドレス生成
 bitcoin-core.cli getnewaddress
-## マイニング 101ブロック
+
 bcrt1qvye3q7thzws8wg5efktavumx4k2pr4evy5rw5a
 
+## マイニング 101ブロック
 bitcoin-core.cli generatetoaddress 101 bcrt1qvye3q7thzws8wg5efktavumx4k2pr4evy5rw5a 10000000
+```
 
+```json
 [
   "480d8422ba7c51047424802fbaa817bc4bf187960f99517b2ba2bd1ee56cd928",
   "166fe030cf46378f27649251b32560670485e3502dba8dc21d3e79c7486dd589",
@@ -1546,7 +1546,8 @@ signet用の　bitcoin.conf に戻す（別名で保管から復元）
 (snap の場合，cd ~/snap/bitcoin-core/common/.bitcoin/)
 
 bitcoin.conf
-```
+
+```bash
 signet=1
 txindex=1
 daemon=1
@@ -1567,10 +1568,10 @@ bitcoin-core.daemon &
 
 --
 
-
 # 課題
 
-1. デフォルトのsignetに接続するBitcoin Core ノードを構築してください1. デフォルトのsignet のfaucet からテスト用のビットコインを入手し，トランザクションのライフサイクルに沿ってトランザクションの生成，署名，ブロードキャスト，検証を行ってみてください
+1. デフォルトのsignetに接続するBitcoin Core ノードを構築してください
+2. デフォルトのsignet のfaucet からテスト用のビットコインを入手し，トランザクションのライフサイクルに沿ってトランザクションの生成，署名，ブロードキャスト，検証を行ってみてください
 3. bitcoin RPC のすべてのAPIの仕様を調べ，bitcoin-cli コマンドなどを使って機能を確認してください。
 
 --
@@ -1578,7 +1579,6 @@ bitcoin-core.daemon &
 ## 1. デフォルトのsignetに接続するBitcoin Core ノードを構築してください
 
 本章 5.2 参照
-
 
 ## 2. デフォルトのsignet のfaucet からテスト用のビットコインを入手し，トランザクションのライフサイクルに沿ってトランザクションの生成，署名，ブロードキャスト，検証を行ってみてください
 
@@ -1592,9 +1592,9 @@ bitcoin-core.daemon &
 
 # 付録
 
-## bitcoinrb の使い方
+## bitcoinrb の使い方の基本
 
-bitcoinrb はRuby言語によるbitcoin core API をRuby から操作するライブラリです。
+bitcoinrb はRuby言語によるbitcoin を処理／操作するライブラリです。
 
 [bitcoinrb のインストール方法](https://github.com/ShigeichiroYamasaki/yamalabo/blob/master/bitcoinrb.md)
 
@@ -1609,25 +1609,27 @@ require 'json'
 
 Bitcoin.chain_params = :signet
 
+# RPCユーザ名
 RPCUSER="hoge"
+# RPCパスワード
 RPCPASSWORD="hoge"
+# bitcoind のホスト
 HOST="localhost"
+# RPCポート番号（signetの場合は38332）
 PORT=38332
 
 # トランザクション手数料 (satoshi)
 fee=20000
- 
+
 def bitcoinRPC(method, params)
- 	http = Net::HTTP.new(HOST, PORT)
- 	request = Net::HTTP::Post.new('/')
- 	request.basic_auth(RPCUSER, RPCPASSWORD)
- 	request.content_type = 'application/json'
- 	request.body = { method: method, params: params, id: 'jsonrpc' }.to_json
- 	JSON.parse(http.request(request).body)["result"]
+     http = Net::HTTP.new(HOST, PORT)
+     request = Net::HTTP::Post.new('/')
+     request.basic_auth(RPCUSER, RPCPASSWORD)
+     request.content_type = 'application/json'
+     request.body = { method: method, params: params, id: 'jsonrpc' }.to_json
+     JSON.parse(http.request(request).body)["result"]
 end
 ```
-
-
 
 ### トランザクションの生成，署名
 
@@ -1649,6 +1651,7 @@ receipt_addr=utxos[0]["address"]
 scriptPubKey=utxos[0]["scriptPubKey"]
 prev_script_pubkey = Bitcoin::Script.parse_from_payload(scriptPubKey)
 ```
+
 * 自分の鍵の情報（receipt_addrからわかる）
 
 ```ruby
@@ -1682,15 +1685,14 @@ tx.out << Bitcoin::TxOut.new(value: value,script_pubkey: script_pubkey)
 * トランザクションへの署名 (P2WPKH)
 
 ```ruby
-# P2WPKHの
-sighash = tx.sighash_for_input(index,prev_script_pubkey, sig_version: :witness_v0, amount: amount)
+# P2WPKH
+# input 0 のシグハッシュ
+sighash = tx.sighash_for_input(0,prev_script_pubkey, sig_version: :witness_v0, amount: value)
 
 sign = key.sign(sighash) + [Bitcoin::SIGHASH_TYPE[:all]].pack('C')
 
 tx.in[0].script_witness.stack << sign
 tx.in[0].script_witness.stack << key.pubkey.htb
-
-
 ```
 
 * 署名済トランザクションの16進形式
@@ -1699,3 +1701,8 @@ tx.in[0].script_witness.stack << key.pubkey.htb
 signedhex=tx.to_payload.bth
 ```
 
+* トランザクションのブロードキャスト
+
+```
+new_txid=bitcoinRPC('sendrawtransaction', [signedhex])
+```
