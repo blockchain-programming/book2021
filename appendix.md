@@ -529,7 +529,7 @@ gf3p[2][1]
 ![formula](https://render.githubusercontent.com/render/math?math=R=(x_3,y_3))
 
 
-<img src="https://render.githubusercontent.com/render/math?math=\displaystyle R(x_4,y_4)=(x_3,-y_3)">
+<img src="https://render.githubusercontent.com/render/math?math=\displaystyle R' = (x_4,y_4)=(x_3,-y_3)">
 
 ```ruby
 def ec_add(pp,qq,a,p)
@@ -586,7 +586,7 @@ end
 
  楕円曲線上の点
  
- <img src="https://latex.codecogs.com/gif.latex? y^2=x^3+3x+3 (mod 13)"/>の場合
+ y^2=x^3 +3x+3 (mod 13)の場合
  
 ```ruby
 # 平方剰余のオイラーの基準で p=  13 の解の存在場所を知る
@@ -661,7 +661,7 @@ end
 
 速度比較実験
 
-![tex](https://latex.codecogs.com/gif.latex?y^2 = x^3 +3x+3 mod (9910))
+y^2 = x^3 +3x+3 mod (9910)
 とすると
 
 ```ruby
