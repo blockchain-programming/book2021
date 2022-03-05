@@ -669,11 +669,13 @@ end
 
 速度比較実験
 
-y^2 = x^3+3x+3 mod 9910
+ <img src="https://latex.codecogs.com/gif.latex? y^2 = x^3 +3x+3 mod (9910)"/>
+ 
 
 とすると
 
 ```ruby
+p=9901
 e=euler_criterion_test(p)
 e[0..5]
 # => [[1, -1], [2, 1], [3, -1], [4, 1], [5, 1], [6, 1]]
