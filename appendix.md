@@ -131,7 +131,8 @@ def eratosthenes(a,primes)
         eratosthenes(a.reject{|x|x%p==0}, primes<<p)
     end
 end
-# @primes に10000 以下の素数のリスト
+
+# @primes に70000 以下の素数のリスト
 @primes = eratosthenes([*2..70000],[])
 
 # フェルマーの小定理
@@ -179,6 +180,7 @@ def crt(a,b,p,q)
   s,t,d = egcd(p,q)     # 拡張ユークリッド互除法
   (b*s*p+a*t*q)%(p*q)
 end
+
 # a=5, b=3, p=7, q=11
 crt(5,3,7,11)
 => 47
@@ -255,6 +257,7 @@ end
 def euler(a,m)
     powmod(a,phi(m),m)
 end
+
 # 実験
 (1..100).map{|n|[n,euler(n,10)]}
 # n が 10 と互いに素のときに 1
@@ -272,6 +275,7 @@ mが2つの素数 p,qの積の場合
 p = @primes[rand(50)]
 q = @primes[rand(50)]
 m = p*q
+
 # 実験（すべてのペアが一致していることを確認する）
 (1..100).map{|n|[n%m,(euler(n,m)*n)%m]}
 ```
@@ -373,6 +377,7 @@ d=egcd(e,fai)[0]%fai            # 秘密鍵 d
 def dec(c,d,p,q)
     crt(powmod(c,d,p),powmod(c,d,q),p,q)
 end
+
 # 平文メッセージ
 m = 12345678901234567890
 
@@ -456,7 +461,6 @@ end
 def neg(a,p)
     p-a
 end
-
 
 # 加法の演算表
 def gfa_table(p)
@@ -542,11 +546,11 @@ def ec_add(pp,qq,a,p)
     return ['inf','inf']
   else
     lm = lamb(x1,x2,y1,y2,a,p)
-    lmsq = gfp(lm,lm,p)
+    lmsq =    gfp(lm,lm,p)
     lmsq_x1 = gfa(lmsq,neg(x1,p),p)
-    x3=gfa(lmsq_x1,neg(x2,p),p)
-    x3_x1 = gfa(x3,neg(x1,p),p)
-    y3 = gfa(gfp(lm,x3_x1,p),y1,p)
+    x3 =      gfa(lmsq_x1,neg(x2,p),p)
+    x3_x1 =   gfa(x3,neg(x1,p),p)
+    y3 =      gfa(gfp(lm,x3_x1,p),y1,p)
     return [x3,neg(y3,p)]
   end
 end
@@ -557,8 +561,8 @@ end
 # 直線の傾き
 def lamb(x1,x2,y1,y2,a,p)
     if x1==x2 and y1==y2 then
-        y1_2 = gfp(2,y1,p)
-        x1sq_3 = gfp(3,gfp(x1,x1,p),p)
+        y1_2 =     gfp(2,y1,p)
+        x1sq_3 =   gfp(3,gfp(x1,x1,p),p)
         x1sq_3_a = gfa(x1sq_3,a,p)
         gfp(x1sq_3_a,inv(y1_2,p),p)
     else
