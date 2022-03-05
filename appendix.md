@@ -669,9 +669,7 @@ end
 
 速度比較実験
 
- <img src="https://latex.codecogs.com/gif.latex? y^2 = x^3 +3x+3 mod (9910)"/>
- 
-
+![tex](https://latex.codecogs.com/gif.latex?y^2 = x^3 +3x+3 mod (9910))
 とすると
 
 ```ruby
