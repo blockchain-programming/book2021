@@ -525,10 +525,10 @@ gf3p[2][1]
 それ以外のとき
 
 直線PQの傾き lambda
-<img src="https://render.githubusercontent.com/render/math?math=\displaystyle R=(x_3,y_3)  ">
 
-<img src="https://render.githubusercontent.com/render/math?math=\displaystyle (x_3,y_3) = (lambda^2-x_1-x_2, lambda(x_3-x_1) + y_1) ">
+![formula](https://render.githubusercontent.com/render/math?math=R=(x_3,y_3) )
 
+![formula](https://render.githubusercontent.com/render/math?math=(x_3,y_3) = (lambda^2-x_1-x_2, lambda(x_3-x_1) + y_1) )
 
 ★注意！（本では、<img src="https://latex.codecogs.com/gif.latex?(x_3,y_3) = (lambda^2-x_1-x_2, lambda(x_3-y_1) + y_1)" />のように書いていますが、間違いです）
 
