@@ -526,18 +526,10 @@ gf3p[2][1]
 
 直線PQの傾き lambda
 
-![formula](https://render.githubusercontent.com/render/math?math=R=(x_3,y_3) )
+![formula](https://render.githubusercontent.com/render/math?math=R=(x_3,y_3))
 
-![formula](https://render.githubusercontent.com/render/math?math=(x_3,y_3) = (lambda^2-x_1-x_2, lambda(x_3-x_1) + y_1) )
 
-★注意！（本では、<img src="https://latex.codecogs.com/gif.latex?(x_3,y_3) = (lambda^2-x_1-x_2, lambda(x_3-y_1) + y_1)" />のように書いていますが、間違いです）
-
-<img src="https://latex.codecogs.com/gif.latex? (x_4,y_4)=(x_3,-y_3)" />
-
-<img src="https://latex.codecogs.com/gif.latex? (1) P \neq Q :  lambda = (y_2-y_1)(x_2-x_1)^{-1} mod(p)"/>
-
-<img src="https://latex.codecogs.com/gif.latex? (2) P = Q : lambda = (3x_1^2+a)(2y_1)^{-1} mod(p)"/>
-
+<img src="https://render.githubusercontent.com/render/math?math=\displaystyle R(x_4,y_4)=(x_3,-y_3)">
 
 ```ruby
 def ec_add(pp,qq,a,p)
