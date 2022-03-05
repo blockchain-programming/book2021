@@ -518,17 +518,17 @@ gf3p[2][1]
 
 #### GF(p) での楕円曲線上の加法
 
-<img src="https://latex.codecogs.com/gif.latex?x_1 = x_2, y_1 + y_2 = 0  mod(p) " />
+<img src="https://render.githubusercontent.com/render/math?math=\displaystyle x_1 = x_2, y_1 + y_2 = 0  mod(p)">
 のとき
-
-<img src="https://latex.codecogs.com/gif.latex?R' = P + Q = O = (\infty, \infty) " />
+<img src="https://render.githubusercontent.com/render/math?math=\displaystyle R' = P + Q = O = (\infty, \infty) ">
 
 それ以外のとき
 
 直線PQの傾き lambda
-<img src="https://latex.codecogs.com/gif.latex?R=(x_3,y_3) " />
+<img src="https://render.githubusercontent.com/render/math?math=\displaystyle R=(x_3,y_3)  ">
 
-<img src="https://latex.codecogs.com/gif.latex?(x_3,y_3) = (lambda^2-x_1-x_2, lambda(x_3-x_1) + y_1)" />
+<img src="https://render.githubusercontent.com/render/math?math=\displaystyle (x_3,y_3) = (lambda^2-x_1-x_2, lambda(x_3-x_1) + y_1) ">
+
 
 ★注意！（本では、<img src="https://latex.codecogs.com/gif.latex?(x_3,y_3) = (lambda^2-x_1-x_2, lambda(x_3-y_1) + y_1)" />のように書いていますが、間違いです）
 
