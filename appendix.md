@@ -690,6 +690,35 @@ p0=[2,2]
  (1..5000).map{|n|scalarPB(n,p0,a,p)}
 ```
 
+---
+## JavaScript
+
+JavaScriptには  pack/unpackがありません
+
+### ユークリッド互除法
+
+```js
+let gcs=(a,b)=>{
+    if (a>=b) {
+        if (a==b) {
+            return b
+        } else {
+            return gcs(b,a-b)
+        }
+    } else {
+        return gcs(b,a)
+    }
+}
+
+let gcd=(a,b)=>{
+    if(a%b==0) {
+        return b
+    } else {
+        return gcd(b,a%b)
+    }
+}
+```
+
 
 
 

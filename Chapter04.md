@@ -38,15 +38,47 @@ def rho(h0)
 end
 
 # 実験
-
 pair=rho("0000000000")
+=> ["cc3dd914b0", "251ca3ba0d"]
 
 # pair が衝突ペアになっていることの確認
-
 [sha40(pair[0]),sha40(pair[1])]
+=> ["c2f0fc6b3f", "c2f0fc6b3f"]
 ```
 
+python3版
 
+```python
+import hashlib
+
+def sha40(x):
+    return hashlib.sha256(x.encode()).hexdigest()[0:10];
+
+def rho(h0):
+    kame=sha40(h0)
+    usagi=sha40(sha40(h0))
+    while kame != usagi:
+        kame=sha40(kame)                # single hashの系列
+        usagi=sha40(sha40(usagi))
+    else:
+        goryu=kame                      # 合流地点を記憶
+        kame=h0
+        while kame != goryu:
+            kame_p,goryu_p=kame,goryu   # 直前のデータ（ハッシュ値の原像）を記憶
+            kame=sha40(kame)            # h0から再スタートする系列
+            goryu=sha40(goryu)          # 合流地点からスタートする系列
+        else:
+            return [kame_p,goryu_p]
+
+# 実験
+pair=rho("0000000000")
+pair
+['cc3dd914b0', '251ca3ba0d']
+
+# pair が衝突ペアになっていることの確認
+[sha40(pair[0]),sha40(pair[1])]
+['c2f0fc6b3f', 'c2f0fc6b3f']
+```
 
 ### 2. データの配列からマークルルートを計算するプログラムを作成してください。
 
@@ -57,10 +89,19 @@ pair=rho("0000000000")
 * テスト用データ
 
 ```ruby
-list=(1..2000).map{|n|(n*1000).to_s}
+list=(0..1999).map{|n|(n*1000).to_s}
 
 # テストデータの確認
 list
+```
+
+python3版
+
+```python
+ls=list(map(lambda n: str(n*1000),range(2000)))
+
+# テストデータの確認
+ls
 ```
 
 * マークルルートの作成
@@ -92,6 +133,31 @@ end
 
 root=mercle_root(list)
 ```
+
+python3版
+
+```python
+import hashlib
+
+def sha256h(d):
+    return hashlib.sha256(d.encode()).hexdigest()
+
+def mercle_root(ls):
+    leaves=list(map(lambda d: sha256h(d),ls))
+    return mroot(leaves)
+
+def each_slice(arr, n):
+    return [arr[i:i + n] for i in range(0, len(arr), n)]
+
+def mroot(leaves):
+    if len(leaves)==1:
+        return leaves[0]
+    else:
+        return mroot(list(map(lambda d: sha256h(d[0]+d[1]) if len(d)==2 else sha256h(d[0]+d[0]),each_slice(leaves,2))))
+
+root=mercle_root(ls)
+```
+
 
 * マークルツリーの作成
 
@@ -127,6 +193,30 @@ tree=mercle_tree(list)
 
 # 確認
 tree
+```
+
+python3版
+
+```python
+def mercle_tree(ls):
+    tree=list(map(lambda d: [sha256h(d),[]],ls))
+    return mtree(tree)
+    
+def node(d):
+    if len(d)==2:
+        hash=sha256h(d[0][0]+d[1][0])
+        return [hash,[d[0],d[1]]]
+    else:
+        hash=sha256h(d[0][0]+d[0][0])
+        return [hash,[d[0],d[0]]]
+
+def mtree(tree):
+    if len(tree)==1:
+        return tree[0]
+    else:
+        return mtree(list(map(lambda d: node(d),each_slice(tree,2))))
+
+tree=mercle_tree(ls)
 ```
 
 * マークルパスの構成
