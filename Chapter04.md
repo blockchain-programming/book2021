@@ -10,6 +10,8 @@
 
 #### 回答例
 
+Ruby版
+
 ```ruby
 require 'digest'
 
@@ -88,6 +90,8 @@ pair
 
 * テスト用データ
 
+Ruby版
+
 ```ruby
 list=(0..1999).map{|n|(n*1000).to_s}
 
@@ -105,6 +109,8 @@ ls
 ```
 
 * マークルルートの作成
+
+Ruby版
 
 ```ruby
 require 'digest'
@@ -160,6 +166,8 @@ root=mercle_root(ls)
 
 
 * マークルツリーの作成
+
+Ruby版
 
 ```ruby
 require 'digest'
@@ -221,6 +229,8 @@ tree=mercle_tree(ls)
 
 * マークルパスの構成
 
+Ruby版
+
 ```ruby
 def merkle_path(tree,hash)
     h=tree[0]                                   # ノードのハッシュ値
@@ -266,6 +276,8 @@ path
 
 * 楕円曲線暗号についてECDSAライブラリを利用します。
 
+Ruby版
+
 ```ruby
 require 'ecdsa'
 require 'securerandom'
@@ -289,6 +301,8 @@ d= SecureRandom.random_number(n-1)
 
 * 証明者の処理
 
+Ruby版
+
 ```ruby
 # 乱数生成
 r= SecureRandom.random_number(n-1)
@@ -309,6 +323,8 @@ s=(r+e*d)%n
 
 * 検証者の処理
 
+Ruby版
+
 ```ruby
 R1= R.x
 e=Digest::SHA256.hexdigest(R1.to_s).to_i(16)
@@ -324,6 +340,8 @@ G*s == R+P*e
 #### 回答例
 
 * 楕円曲線暗号についてECDSAライブラリを利用します。
+
+Ruby版
 
 ```ruby
 require 'ecdsa'
@@ -347,6 +365,8 @@ d= SecureRandom.random_number(n-1)
 ```
 
 * 署名者の処理
+
+Ruby版
 
 ```ruby
 # メッセージ
@@ -373,6 +393,8 @@ m
 ```
 
 * 検証者の処理
+
+Ruby版
 
 ```ruby
 # 2次元データのRをスカラーに変換(Rのx座標)
