@@ -66,6 +66,10 @@ $ bitcoin-cli testmempoolaccept
     - 誤：ゲーム論
     - 正：ゲーム理論
 
+- p.221 6章 下から行目
+    - 誤：ZK-Rolleup
+    - 正：ZK-Rollups
+
 - p.341 付録 上から4行目の数式の説明文
     - 誤：乗法逆元演算
 ![\begin{align*}
