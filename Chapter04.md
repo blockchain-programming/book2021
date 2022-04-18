@@ -265,10 +265,49 @@ end
 hash=Digest::SHA256.hexdigest("10000")
 hash2=Digest::SHA256.hexdigest("23000")
 
-path=merkle_path(tree,hash)
-path
+path1=merkle_path(tree,hash)
+path1
+
+path2=merkle_path(tree,hash2)
+path2
 ```
 
+python3版
+
+```python
+def merkle_path(tree,hash):
+    h=tree[0]                                   # ノードのハッシュ値
+    bL=tree[1][0]                               # 左枝
+    bR=tree[1][1]                               # 右枝
+    if bL[0]==hash:                             # 左枝のハッシュ値が対象と一致
+        if bL[1]==[]:                           # 葉ノード
+            return ['*',bR[0]]                  # 逆の右枝のハッシュ値がパスになる
+    elif bR[0]==hash:                           # 右枝のハッシュ値が対象と一致
+        if bR[1]==[]:                           # 葉ノード
+            return [bL[0],'*']                  # 逆の左枝のハッシュ値がパスになる
+    else:                                       # 両方の枝のハッシュ値が対象と不一致
+        if bL[1] != [] and bR[1] != []:         # 葉でないノード
+            pL=merkle_path(bL,hash)             # 左枝のパスを探索
+            pR=merkle_path(bR,hash)             # 右枝のパスを探索
+            if pL != []:                        # 左枝のパスが空でない
+                return [pL,bR[0]]               # 逆の右枝のハッシュ値をパスに追加
+            elif pR != []:                      # 右枝のパスが空でない
+                return [bL[0],pR]               # 逆の左枝のハッシュ値をパスに追加
+            else:
+                return []
+        else:
+            return []
+            
+# 実行
+hash=sha256h("10000")
+hash2=sha256h("23000")
+
+path1=merkle_path(tree,hash)
+path1
+
+path2=merkle_path(tree,hash2)
+path2
+```
 
 ### 3. 非対話Schnorrのゼロ知識証明プロトコルを設計し証明者と検証者のプログラムを実装してください。
 
@@ -277,6 +316,12 @@ path
 * 楕円曲線暗号についてECDSAライブラリを利用します。
 
 Ruby版
+
+gem のインストール
+
+```bash
+gem install ecdsa
+```
 
 ```ruby
 require 'ecdsa'
