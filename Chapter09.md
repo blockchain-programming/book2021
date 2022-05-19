@@ -8,7 +8,7 @@
 > ［参考］例えば，International Token Standardization Association（ITSA）のInternational Token Classification（ITC）フレームワークといったものがあります。
 
 4. ［9.3節］ERC20の実装を調べてみましょう。<br>
-> ［参考］残高を追跡するためのデータ構造と，引当金を追跡するためのデータ構造の2つのデータ構造が含まれていることがわかります。詳しくは「Mastering Ethereum」などを参照してください。
+> ［参考］残高を追跡するためのデータ構造と，引当金を追跡するためのデータ構造の2つのデータ構造が含まれていることがわかります。詳しくは「[Mastering Ethereum](https://github.com/ethereumbook/ethereumbook)」などを参照してください。
 
 5. ［9.3節］自分独自のERC20トークンを発行してみましょう。<br>
 > ［参考］ERC20トークンそのものは，約30行のSolidityコードで実装できます。ただし，セキュアコーディングなどによって，より複雑な実装になります。
