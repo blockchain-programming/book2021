@@ -1,32 +1,6 @@
 ## 正誤表（第1刷）
 
-- p.v 目次 一番下の行に追加
-    - 誤：（一番下の行に追加）
-    - 正：4.6 秘密計算……………………102
-
-- p.54 3章 上から11行目
-    - 誤：1996年
-    - 正：1994年
-
-- p.70 3章 下から2行目（参考文献[2]）
-    - 誤：https://cryptorating.eu/whitepapers/イーサリアム/イーサリアム_white_paper.pdf
-    - 正：https://cryptorating.eu/whitepapers/Ethereum/Ethereum_white_paper.pdf
-
-- p.75 4章 上から16行目（「散対数仮定（DL仮定）」の項）
-    - 誤：生成限g
-    - 正：生成元g
-
-- p.75 4章 上から19行目（「CDH仮定」の項）
-    - 誤：生成限g
-    - 正：生成元g
-
-- p.75 4章 上から22行目（「DDH仮定」の項）
-    - 誤：生成限g
-    - 正：生成元g
-
-- p.102 4章 下から9行目
-    - 誤：秘密計算
-    - 正：4.6 秘密計算
+正誤表は[こちらのPDF](/errata.pdf)です．お詫びして訂正いたします． 
 
 - p.130 5章 上から3つ目のコード
     - 誤：
@@ -53,68 +27,6 @@ $ bitcoin-cli testmempoolaccept
  }
 ]
 ```
-
-- p.151 6章 表6.8 の説明
-    - 誤：（行は前半２ビットで後半３ビット）
-    - 正：（行は前半２ビットで，列は後半３ビット）
-
-- p.167 6章 上から7行目
-    - 誤：ゲーム論
-    - 正：ゲーム理論
-
-- p.168 6章 上から7行目
-    - 誤：ゲーム論
-    - 正：ゲーム理論
-
-- p.221 10章 下から1行目
-    - 誤：ZK-Rolleup
-    - 正：ZK-Rollups
-
-- p.341 付録 上から4行目の数式の説明文
-
-    誤：乗法逆元演算 $ \dfrac{1}{x} $ は加法逆元演算 $ -y $ に写像される
-
-    正：乗法逆元演算 $ \dfrac{1}{a} $ は加法逆元演算 $ -x \quad (x = \log (a)) $ に写像される 
-
-- p.347 付録「巡回群としてのGF(p<sup>n</sup>)」 下から4行目の数式
-  - 誤：
-![\begin{align*}
-\theta^{1} = 1
-\end{align*}
-](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0A%5Ctheta%5E%7B1%7D+%3D+1%0A%5Cend%7Balign%2A%7D%0A)
-
-  - 正：
-![\begin{align*}
-\theta^{1} = \theta
-\end{align*}
-](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0A%5Ctheta%5E%7B1%7D+%3D+%5Ctheta%0A%5Cend%7Balign%2A%7D%0A)
-
-- p.351 付録「有限体上の楕円曲線」 上から6行目の数式
-  - 誤：
-![\begin{align*}
-\{(x, y) \mid x, y \in G\!F(p) \} \cup \{ ( \infty, \infty ) \}
-\end{align*}
-](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0A%5C%7B%28x%2C+y%29+%5Cmid+x%2C+y+%5Cin+G%5C%21F%28p%29+%5C%7D+%5Ccup+%5C%7B+%28+%5Cinfty%2C+%5Cinfty+%29+%5C%7D%0A%5Cend%7Balign%2A%7D%0A)
-
-  - 正：
-![\begin{align*}
-\{(x, y) \mid x, y \in G\!F(p) \} \cup \{ ( \infty, \infty ) \}
-\end{align*}
-](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0A%5C%7B%28x%2C+y%29+%5Cmid+x%2C+y+%5Cin+G%5C%21F%28p%29+%5C%7D+%5Ccup+%5C%7B+%28+%5Cinfty%2C+%5Cinfty+%29+%5C%7D%0A%5Cend%7Balign%2A%7D%0A)
-． ここで (∞, ∞) は無限遠点O．
-
-- p.352 付録「GF(p) での楕円曲線上の加法」 上から9行目の数式
-  - 誤：
-![\begin{align*}
-(x_{3}, y_{3}) = (\lambda^{2} - x_{1} - x_{2}, \lambda(x_{3} - y_{1}) + y_{1})
-\end{align*}
-](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0A%28x_%7B3%7D%2C+y_%7B3%7D%29+%3D+%28%5Clambda%5E%7B2%7D+-+x_%7B1%7D+-+x_%7B2%7D%2C+%5Clambda%28x_%7B3%7D+-+y_%7B1%7D%29+%2B+y_%7B1%7D%29%0A%5Cend%7Balign%2A%7D%0A)
-
-  - 正：
-![\begin{align*}
-(x_{3}, y_{3}) = (\lambda^{2} - x_{1} - x_{2}, \lambda(x_{3} - x_{1}) + y_{1})
-\end{align*}
-](https://render.githubusercontent.com/render/math?math=%5Cdisplaystyle+%5Cbegin%7Balign%2A%7D%0A%28x_%7B3%7D%2C+y_%7B3%7D%29+%3D+%28%5Clambda%5E%7B2%7D+-+x_%7B1%7D+-+x_%7B2%7D%2C+%5Clambda%28x_%7B3%7D+-+x_%7B1%7D%29+%2B+y_%7B1%7D%29%0A%5Cend%7Balign%2A%7D%0A)
 
 <!--
 数式画像を生成するにあたり，以下サイトを使いました．
