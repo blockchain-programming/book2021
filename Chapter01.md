@@ -213,4 +213,4 @@ average2=data2.sum/N
 
 #### 参考
 
-[Bitcoin core Signet ノードの構築](https://github.com/ShigeichiroYamasaki/yamalabo/blob/master/bitcoin-core-signet.md)
+[Bitcoin core Signet ノードの構築](https://github.com/ShigeichiroYamasaki/yamalabo/blob/master/bitcoin/0.bitcoin-core-signet.md)
