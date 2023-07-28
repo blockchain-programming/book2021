@@ -1596,7 +1596,7 @@ bitcoin-core.daemon &
 
 bitcoinrb はRuby言語によるbitcoin を処理／操作するライブラリです。
 
-[bitcoinrb のインストール方法](https://github.com/ShigeichiroYamasaki/yamalabo/blob/master/bitcoinrb.md)
+[bitcoinrb のインストール方法](https://github.com/ShigeichiroYamasaki/yamalabo/blob/master/bitcoin/3.bitcoinrb.md)
 
 bitcoinrb の基本操作を習得しておいてください。
 
