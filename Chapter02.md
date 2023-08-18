@@ -69,17 +69,15 @@ btc_jpy=btc["BTC"]["JPY"]["last"]
 # 10分あたりの電力で評価
 # 5円／1KWh のときの10分あたりの単価
 unit=5.0/6
-# 消費電力料（TWh）
-twh=(btc_jpy*reward/unit)/1000000
+# 消費電力料（GWh）
+gwh=(btc_jpy*reward/unit)/1000000
 
-# 2021年7月28日現在 32.819847225 TWh
 
 # 10円／1KWh のときの10分あたりの単価
 unit=10.0/6
-# 消費電力料（TWh）
-twh=(btc_jpy*reward/unit)/1000000
 
-# 2021年7月28日現在　16.4099236125 TWh
+# 消費電力料（GWh）
+gwh=(btc_jpy*reward/unit)/1000000
 
 # ただし，この消費量はマイニング競争に参加する一つのプレーヤーが費やす電力
 ```
